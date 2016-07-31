@@ -63,7 +63,7 @@ class NewsFetcher
       'WHERE language LIKE "es" AND time_diff < 86400').each do |n|
       tmp << "#{n['title']}\n"
     end
-    blacklist = Highscore::Blacklist.load_file 'plugins/blacklist.txt'
+    blacklist = Highscore::Blacklist.load_file 'blacklist.txt'
     text = Highscore::Content.new tmp, blacklist
     text.configure do
       set :short_words_threshold, 3
@@ -73,15 +73,21 @@ class NewsFetcher
   end
 
   def daily_trending_news
+    desired_keys = ['title', 'url', 'date', 'source_name']
     news = {}
-    daily_trending_keywords.each do |keyword|
-      news[keyword.text] = @db.execute('SELECT title, news.url, news.date, sources.name, '\
-        'strftime(\'%s\',\'now\') - news.date as time_diff '\
+    keywords = daily_trending_keywords
+    keywords.each do |keyword|
+      tmp = @db.execute('SELECT title, news.url, news.date, sources.name as '\
+        'source_name, strftime(\'%s\',\'now\') - news.date as time_diff '\
         'FROM news '\
         'JOIN sources ON news.source_id = sources.source_id '\
         "WHERE title LIKE \'%#{keyword}%\' AND time_diff < 86400 "\
         'ORDER BY news.date DESC')
+      tmp.each do |item|
+        item.delete_if { |key, _value| !desired_keys.include? key }
+      end
+      news[keyword] = tmp
     end
-    news
+    { 'keywords' => keywords, 'news' => news }
   end
 end
