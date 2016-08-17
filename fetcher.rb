@@ -55,12 +55,12 @@ class NewsFetcher
     end
   end
 
-  def daily_trending_keywords
+  def trending_keywords(date)
     tmp = ''
     @db.execute('SELECT title, news.url, sources.name, '\
-      'strftime(\'%s\',\'now\') - news.date as time_diff FROM news '\
+      "news.date - strftime(\'%s\',\'#{date}\') as time_diff FROM news "\
       'JOIN sources ON news.source_id = sources.source_id '\
-      'WHERE language LIKE "es" AND time_diff < 86400').each do |n|
+      'WHERE language LIKE "es" AND time_diff < 86400 AND time_diff >= 0').each do |n|
       tmp << "#{n['title']}\n"
     end
     blacklist = Highscore::Blacklist.load_file 'blacklist.txt'
@@ -72,16 +72,16 @@ class NewsFetcher
     text.keywords.top(3)
   end
 
-  def daily_trending_news
+  def trending_news(date)
     desired_keys = ['title', 'url', 'date', 'source_name']
     news = {}
-    keywords = daily_trending_keywords
+    keywords = trending_keywords date
     keywords.each do |keyword|
       tmp = @db.execute('SELECT title, news.url, news.date, sources.name as '\
-        'source_name, strftime(\'%s\',\'now\') - news.date as time_diff '\
+        "source_name, news.date - strftime(\'%s\',\'#{date}\') as time_diff "\
         'FROM news '\
         'JOIN sources ON news.source_id = sources.source_id '\
-        "WHERE title LIKE \'%#{keyword}%\' AND time_diff < 86400 "\
+        "WHERE title LIKE \'%#{keyword}%\' AND time_diff < 86400 AND time_diff >= 0 "\
         'ORDER BY news.date DESC')
       tmp.each do |item|
         item.delete_if { |key, _value| !desired_keys.include? key }
@@ -91,13 +91,13 @@ class NewsFetcher
     { 'keywords' => keywords, 'news' => news }
   end
 
-  def today_news
+  def latest_news(date)
     desired_keys = ['title', 'url', 'date', 'source_name']
     news = @db.execute('SELECT title, news.url, news.date, sources.name as '\
-      'source_name, strftime(\'%s\',\'now\') - news.date as time_diff '\
+      "source_name, news.date - strftime(\'%s\',\'#{date}\') as time_diff "\
       'FROM news '\
       'JOIN sources ON news.source_id = sources.source_id '\
-      'WHERE time_diff < 86400 '\
+      'WHERE time_diff < 86400 AND time_diff >= 0 '\
       'ORDER BY news.date DESC')
     news.each do |item|
       item.delete_if { |key, _value| !desired_keys.include? key }

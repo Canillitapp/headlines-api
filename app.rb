@@ -5,12 +5,14 @@ require_relative 'fetcher'
 
 news = NewsFetcher.new
 
-get '/trending' do
+get '/trending/:date' do
   content_type :json
-  news.daily_trending_news.to_json
+  
+  news.trending_news(params[:date]).to_json
 end
 
-get '/today' do
+get '/latest/:date' do
   content_type :json
-  news.today_news.to_json
+
+  news.latest_news(params[:date]).to_json
 end
