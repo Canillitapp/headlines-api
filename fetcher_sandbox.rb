@@ -2,7 +2,9 @@ require 'rufus-scheduler'
 require_relative 'fetcher'
 
 news = NewsFetcher.new
-news.fetch
+# news.fetch
+# news.daily_trending_news
+puts news.daily_trending_keywords
 
 # scheduler = Rufus::Scheduler.new
 #
@@ -12,5 +14,4 @@ news.fetch
 #
 # scheduler.join
 
-# puts news.daily_trending_keywords
 # puts news.daily_trending_news

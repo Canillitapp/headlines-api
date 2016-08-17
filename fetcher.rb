@@ -90,4 +90,18 @@ class NewsFetcher
     end
     { 'keywords' => keywords, 'news' => news }
   end
+
+  def today_news
+    desired_keys = ['title', 'url', 'date', 'source_name']
+    news = @db.execute('SELECT title, news.url, news.date, sources.name as '\
+      'source_name, strftime(\'%s\',\'now\') - news.date as time_diff '\
+      'FROM news '\
+      'JOIN sources ON news.source_id = sources.source_id '\
+      'WHERE time_diff < 86400 '\
+      'ORDER BY news.date DESC')
+    news.each do |item|
+      item.delete_if { |key, _value| !desired_keys.include? key }
+    end
+    news
+  end
 end
