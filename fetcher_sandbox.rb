@@ -1,10 +1,10 @@
 require 'rufus-scheduler'
+require 'json'
 require_relative 'fetcher'
 
 news = NewsFetcher.new
 # news.fetch
-# news.daily_trending_news
-puts news.daily_trending_keywords
+# puts news.trending_news('2016-09-09', 3).to_json
 
 # scheduler = Rufus::Scheduler.new
 #

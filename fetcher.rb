@@ -55,43 +55,6 @@ class NewsFetcher
     end
   end
 
-  def trending_keywords(date, count)
-    tmp = ''
-    @db.execute('SELECT title, news.url, sources.name, '\
-      "news.date - strftime(\'%s\',\'#{date}\') as time_diff FROM news "\
-      'JOIN sources ON news.source_id = sources.source_id '\
-      'WHERE language LIKE "es" AND time_diff < 86400 AND time_diff >= 0').each do |n|
-      tmp << "#{n['title']}\n"
-    end
-    blacklist = Highscore::Blacklist.load_file 'blacklist.txt'
-    text = Highscore::Content.new tmp, blacklist
-    text.configure do
-      # ignore short words such as "el", "que", "muy"
-      set :short_words_threshold, 3
-    end
-
-    text.keywords.top(count)
-  end
-
-  def trending_news(date, count)
-    desired_keys = ['title', 'url', 'date', 'source_name']
-    news = {}
-    keywords = trending_keywords(date, count)
-    keywords.each do |keyword|
-      tmp = @db.execute('SELECT title, news.url, news.date, sources.name as '\
-        "source_name, news.date - strftime(\'%s\',\'#{date}\') as time_diff "\
-        'FROM news '\
-        'JOIN sources ON news.source_id = sources.source_id '\
-        "WHERE title LIKE \'%#{keyword}%\' AND time_diff < 86400 AND time_diff >= 0 "\
-        'ORDER BY news.date DESC')
-      tmp.each do |item|
-        item.delete_if { |key, _value| !desired_keys.include? key }
-      end
-      news[keyword] = tmp
-    end
-    { 'keywords' => keywords, 'news' => news }
-  end
-
   def latest_news(date)
     desired_keys = ['title', 'url', 'date', 'source_name']
     news = @db.execute('SELECT title, news.url, news.date, sources.name as '\
@@ -104,5 +67,52 @@ class NewsFetcher
       item.delete_if { |key, _value| !desired_keys.include? key }
     end
     news
+  end
+
+  def keywords_from_news(news, count)
+    tmp = ''
+    news.each do |n|
+      tmp << "#{n['title']}\n"
+    end
+
+    blacklist = Highscore::Blacklist.load_file 'blacklist.txt'
+    text = Highscore::Content.new tmp, blacklist
+    text.configure do
+      # ignore short words such as "el", "que", "muy"
+      set :short_words_threshold, 3
+    end
+
+    text.keywords.top(count)
+  end
+
+  def trending_news(date, count)
+    latest_news = latest_news(date)
+    keywords = keywords_from_news(latest_news, count * 2)
+
+    trending = {}
+    keywords.each do |k|
+      trending[k.to_s] = []
+    end
+
+    latest_news.each do |i|
+      keywords.each do |k|
+        if i['title'].include? k.to_s
+          trending[k.to_s] << i
+          break
+        end
+      end
+    end
+
+    ordered_keywords = keywords.sort do |x, y|
+      trending[y.to_s].length <=> trending[x.to_s].length
+    end
+
+    ordered_keywords = ordered_keywords.take(count).map(&:to_s)
+
+    trending = trending.select do |k, _|
+      ordered_keywords.include? k.to_s
+    end
+
+    { 'keywords' => ordered_keywords, 'news' => trending }
   end
 end
