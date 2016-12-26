@@ -3,8 +3,8 @@ require 'json'
 require_relative 'fetcher'
 
 news = NewsFetcher.new
-# news.fetch
-# puts news.trending_news('2016-09-09', 3).to_json
+news.fetch
+puts news.trending_news('2016-12-26', 3).to_json
 
 # scheduler = Rufus::Scheduler.new
 #
