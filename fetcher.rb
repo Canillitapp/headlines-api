@@ -4,6 +4,7 @@ require 'sanitize'
 require 'sqlite3'
 require 'logger'
 require 'highscore'
+require 'uri'
 
 # NewsFetcher
 class NewsFetcher
@@ -14,6 +15,7 @@ class NewsFetcher
   end
 
   def save_news_from_source(source)
+    feed_uri = URI.parse(source['url'])
     open(source['url']) do |rss|
       feed = RSS::Parser.parse(rss, false)
       feed.items.each do |item|
@@ -24,6 +26,8 @@ class NewsFetcher
                    else
                      Sanitize.fragment(item.link)
                    end
+
+        link_url = "#{feed_uri.scheme}://#{feed_uri.host}/#{item.link.sub(/^\//, '')}" unless link_url.start_with?('http://', 'https://')
 
         title = Sanitize.fragment(item.title).strip
 
