@@ -5,6 +5,7 @@ require 'sqlite3'
 require 'logger'
 require 'highscore'
 require 'uri'
+require 'metainspector'
 
 # NewsFetcher
 class NewsFetcher
@@ -33,6 +34,15 @@ class NewsFetcher
         # if the URL is malformed like this:
         # http://www.perfil.com/http://trends.perfil.com/2016-12-31-3981-enterate-si-esta-noche-te-quedas-sin-whatsapp/
         link_url = link_url.gsub(/^https?:\/\/.+(https?:\/\/)/, '\1')
+      
+        img_url = nil
+
+        begin
+          page = MetaInspector.new(link_url)
+          img_url = page.images.best
+        rescue => e
+          @logger.warn("Exception: #{e.message}")
+        end
 
         title = Sanitize.fragment(item.title).strip
 
@@ -43,12 +53,15 @@ class NewsFetcher
         end
 
         @db.execute(
-          'INSERT INTO news(url, title, date, source_id) VALUES(?, ?, ?, ?)',
+          'INSERT INTO news(url, title, date, source_id, img_url) '\
+          'VALUES(?, ?, ?, ?, ?)',
           link_url,
           title,
           date,
-          source['source_id'])
-        @logger.debug("#{date} - #{title[0...50]}")
+          source['source_id'],
+          img_url
+        )
+        @logger.debug("#{date} - #{title[0...40]} | img: #{img_url[0...50]}")
       end
     end
   rescue => e
@@ -65,9 +78,10 @@ class NewsFetcher
   end
 
   def latest_news(date)
-    desired_keys = ['title', 'url', 'date', 'source_name']
+    desired_keys = ['title', 'url', 'date', 'source_name', 'img_url']
     news = @db.execute('SELECT title, news.url, news.date, sources.name as '\
-      "source_name, news.date - strftime(\'%s\',\'#{date}\') as time_diff "\
+      "source_name, news.date - strftime(\'%s\',\'#{date}\') as time_diff, "\
+      'img_url '\
       'FROM news '\
       'JOIN sources ON news.source_id = sources.source_id '\
       'WHERE time_diff < 86400 AND time_diff >= 0 '\
