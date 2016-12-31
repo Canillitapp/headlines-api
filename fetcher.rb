@@ -27,7 +27,12 @@ class NewsFetcher
                      Sanitize.fragment(item.link)
                    end
 
+        # relative paths
         link_url = "#{feed_uri.scheme}://#{feed_uri.host}/#{item.link.sub(/^\//, '')}" unless link_url.start_with?('http://', 'https://')
+
+        # if the URL is malformed like this:
+        # http://www.perfil.com/http://trends.perfil.com/2016-12-31-3981-enterate-si-esta-noche-te-quedas-sin-whatsapp/
+        link_url = link_url.gsub(/^https?:\/\/.+(https?:\/\/)/, '\1')
 
         title = Sanitize.fragment(item.title).strip
 
