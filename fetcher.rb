@@ -52,16 +52,21 @@ class NewsFetcher
           date = DateTime.now.strftime('%s')
         end
 
-        ActiveRecord::Base.connection_pool.with_connection do
-          News.create(
-            url: link_url,
-            title: title,
-            date: date,
-            source_id: source['source_id'],
-            img_url: img_url
-          )
+        if News.where(url: link_url).exists?
+          @logger.debug("#{date} - #{title[0...40]} already exists. Stop importing from this source")
+          break
+        else
+          ActiveRecord::Base.connection_pool.with_connection do
+            News.create(
+              url: link_url,
+              title: title,
+              date: date,
+              source_id: source['source_id'],
+              img_url: img_url
+            )
+          end
+          @logger.debug("#{date} - #{title[0...40]} | img: #{img_url[0...50]}")
         end
-        @logger.debug("#{date} - #{title[0...40]} | img: #{img_url[0...50]}")
       end
     end
   rescue => e
