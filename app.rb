@@ -1,10 +1,15 @@
 require 'sinatra'
 require 'json'
+require 'active_record'
 
 require './database'
 require './fetcher'
 
 news = NewsFetcher.new
+
+after do
+  ActiveRecord::Base.clear_active_connections!
+end
 
 get '/trending/:date' do
   content_type :json
