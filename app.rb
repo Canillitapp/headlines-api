@@ -1,7 +1,8 @@
 require 'sinatra'
 require 'json'
 
-require_relative 'fetcher'
+require './database'
+require './fetcher'
 
 news = NewsFetcher.new
 
