@@ -1,10 +1,23 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    activemodel (5.0.1)
+      activesupport (= 5.0.1)
+    activerecord (5.0.1)
+      activemodel (= 5.0.1)
+      activesupport (= 5.0.1)
+      arel (~> 7.0)
+    activesupport (5.0.1)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (~> 0.7)
+      minitest (~> 5.1)
+      tzinfo (~> 1.1)
     addressable (2.5.0)
       public_suffix (~> 2.0, >= 2.0.2)
+    arel (7.1.4)
     bloomfilter-rb (2.1.1)
       redis
+    concurrent-ruby (1.0.4)
     crass (1.0.2)
     domain_name (0.5.20161129)
       unf (>= 0.0.5, < 1.0.0)
@@ -26,6 +39,7 @@ GEM
       whatlanguage (>= 1.0.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
+    i18n (0.7.0)
     metainspector (5.3.1)
       addressable (~> 2.4)
       faraday (~> 0.9)
@@ -37,6 +51,7 @@ GEM
       nesty (~> 1.0)
       nokogiri (~> 1.6)
     mini_portile2 (2.1.0)
+    minitest (5.10.1)
     multipart-post (2.0.0)
     nesty (1.0.2)
     nokogiri (1.6.8)
@@ -60,7 +75,10 @@ GEM
       rack-protection (~> 1.4)
       tilt (>= 1.3, < 3)
     sqlite3 (1.3.11)
+    thread_safe (0.3.5)
     tilt (2.0.5)
+    tzinfo (1.2.2)
+      thread_safe (~> 0.1)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.2)
@@ -70,6 +88,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activerecord
   highscore
   metainspector
   nokogiri
@@ -79,4 +98,4 @@ DEPENDENCIES
   sqlite3
 
 BUNDLED WITH
-   1.13.6
+   1.13.7

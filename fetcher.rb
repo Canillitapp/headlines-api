@@ -1,17 +1,17 @@
 require 'rss'
 require 'open-uri'
 require 'sanitize'
-require 'sqlite3'
 require 'logger'
 require 'highscore'
 require 'uri'
 require 'metainspector'
 
+require './news'
+require './source'
+
 # NewsFetcher
 class NewsFetcher
   def initialize
-    @db = SQLite3::Database.new('news.db')
-    @db.results_as_hash = true
     @logger = Logger.new(STDOUT)
   end
 
@@ -34,7 +34,7 @@ class NewsFetcher
         # if the URL is malformed like this:
         # http://www.perfil.com/http://trends.perfil.com/2016-12-31-3981-enterate-si-esta-noche-te-quedas-sin-whatsapp/
         link_url = link_url.gsub(/^https?:\/\/.+(https?:\/\/)/, '\1')
-      
+
         img_url = nil
 
         begin
@@ -52,15 +52,15 @@ class NewsFetcher
           date = DateTime.now.strftime('%s')
         end
 
-        @db.execute(
-          'INSERT INTO news(url, title, date, source_id, img_url) '\
-          'VALUES(?, ?, ?, ?, ?)',
-          link_url,
-          title,
-          date,
-          source['source_id'],
-          img_url
+        n = News.create(
+          url: link_url,
+          title: title,
+          date: date,
+          source_id: source['source_id'],
+          img_url: img_url
         )
+
+        puts n
         @logger.debug("#{date} - #{title[0...40]} | img: #{img_url[0...50]}")
       end
     end
@@ -71,25 +71,20 @@ class NewsFetcher
   def fetch
     @logger.info('Fetching news')
 
-    @db.execute('SELECT * FROM sources').each do |s|
+    Source.all.each do |s|
       @logger.info("From #{s['name']} (#{s['url']})")
       save_news_from_source(s)
     end
   end
 
   def latest_news(date)
-    desired_keys = ['title', 'url', 'date', 'source_name', 'img_url']
-    news = @db.execute('SELECT title, news.url, news.date, sources.name as '\
-      "source_name, news.date - strftime(\'%s\',\'#{date}\') as time_diff, "\
-      'img_url '\
-      'FROM news '\
-      'JOIN sources ON news.source_id = sources.source_id '\
-      'WHERE time_diff < 86400 AND time_diff >= 0 '\
-      'ORDER BY news.date DESC')
-    news.each do |item|
-      item.delete_if { |key, _value| !desired_keys.include? key }
-    end
-    news
+    date_begin = Date.parse(date)
+    date_end = date_begin + 1
+
+    News
+      .where('date > ?', date_begin.to_time.to_i)
+      .where('date < ?', date_end.to_time.to_i)
+      .order('date DESC')
   end
 
   def keywords_from_news(news, count)
