@@ -120,7 +120,11 @@ class NewsFetcher
     latest_news.each do |i|
       keywords.each do |k|
         if i['title'].include? k.to_s
-          trending[k.to_s] << i
+          # convert the ActiveRecord to a hash despite its confusing name
+          # then add the source_name 'property'
+          h = i.as_json
+          h['source_name'] = i.source_name
+          trending[k.to_s] << h
           break
         end
       end

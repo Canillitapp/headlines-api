@@ -26,5 +26,5 @@ end
 get '/latest/:date' do
   content_type :json
 
-  news.latest_news(params[:date]).to_json
+  news.latest_news(params[:date]).to_json(:methods => :source_name)
 end
