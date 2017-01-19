@@ -83,7 +83,7 @@ class NewsFetcher
   end
 
   def latest_news(date)
-    date_begin = Date.parse(date)
+    date_begin = Date.strptime("#{date} -0300", '%Y-%m-%d %z')
     date_end = date_begin + 1
 
     News

@@ -3,8 +3,14 @@ require 'json'
 require_relative 'fetcher'
 
 news = NewsFetcher.new
-news.fetch
-puts news.trending_news('2016-12-26', 3).to_json
+# news.fetch
+
+# puts news.trending_news('2017-01-18', 3).to_json
+# puts news.latest_news('2017-01-18').to_json
+
+news.latest_news('2017-01-18').each do |i|
+  puts "#{Time.at(i.date).to_datetime} - #{i.title}"
+end
 
 # scheduler = Rufus::Scheduler.new
 #
