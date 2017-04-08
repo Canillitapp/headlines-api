@@ -6,7 +6,10 @@ class Reaction < ActiveRecord::Base
 
   def self.raw_reactions_by_news_id(news_id)
     Reaction.reactions_by_news_id(news_id).map do |k, v|
-      [Rumoji.decode(k), v]
+      {
+        'reaction' => Rumoji.decode(k),
+        'amount' => v
+      }
     end
   end
 
