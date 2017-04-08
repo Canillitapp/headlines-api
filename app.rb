@@ -32,7 +32,7 @@ get '/latest/:date' do
   news.latest_news_with_reactions(params[:date]).to_json(:methods => :source_name)
 end
 
-post '/reaction/:news_id' do
+post '/reactions/:news_id' do
   content_type :json
   emoji = Rumoji.encode(params[:reaction])
   Reaction.create(reaction: emoji, news_id: params[:news_id])
