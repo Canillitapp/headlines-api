@@ -7,6 +7,7 @@ require './database'
 require './fetcher'
 require './news'
 require './reaction'
+require './user'
 
 news = NewsFetcher.new
 
@@ -34,8 +35,20 @@ end
 
 post '/reactions/:news_id' do
   content_type :json
+
+  user = User.where(identifier: params[:user_id], source: params[:source]).first
+
+  if user.nil?
+    User.create(identifier: params[:user_id], source: params[:source])
+    user = User.where(identifier: params[:user_id], source: params[:source]).first
+  end
+
   emoji = Rumoji.encode(params[:reaction])
-  Reaction.create(reaction: emoji, news_id: params[:news_id])
+  Reaction.create(
+    reaction: emoji,
+    news_id: params[:news_id],
+    user_id: user.user_id
+  )
 end
 
 get '/search/:keywords' do
