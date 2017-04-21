@@ -4,6 +4,7 @@ require 'active_record'
 
 require './database'
 require './fetcher'
+require './news'
 
 news = NewsFetcher.new
 
@@ -27,4 +28,10 @@ get '/latest/:date' do
   content_type :json
 
   news.latest_news(params[:date]).to_json(:methods => :source_name)
+end
+
+get '/search/:keywords' do
+  content_type :json
+
+  News.search_news_by_title(params[:keywords]).to_json
 end
