@@ -33,5 +33,5 @@ end
 get '/search/:keywords' do
   content_type :json
 
-  News.search_news_by_title(params[:keywords]).to_json
+  News.search_news_by_title(params[:keywords]).to_json(:methods => :source_name)
 end
