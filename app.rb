@@ -53,8 +53,9 @@ end
 
 get '/search/:keywords' do
   content_type :json
-
-  News.search_news_by_title(params[:keywords]).to_json(:methods => :source_name)
+  News
+    .search_news_by_title_with_reactions(params[:keywords])
+    .to_json(methods: :source_name)
 end
 
 get '/reactions/:user_id/:source' do
