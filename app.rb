@@ -60,11 +60,5 @@ end
 get '/reactions/:user_id/:source' do
   content_type :json
   user = User.where(identifier: params[:user_id], source: params[:source]).first
-
-  response = Reaction.joins(:news).where(user: user).map do |r|
-    tmp = r.as_json
-    tmp['news'] = News.find_by(news_id: r.news_id).as_json
-    tmp
-  end
-  response.to_json
+  Reaction.joins(:news).where(user: user).as_json(include: :news).to_json
 end
