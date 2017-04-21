@@ -56,3 +56,14 @@ get '/search/:keywords' do
 
   News.search_news_by_title(params[:keywords]).to_json(:methods => :source_name)
 end
+
+get '/reactions/:user_id/:source' do
+  content_type :json
+  user = User.where(identifier: params[:user_id], source: params[:source]).first
+  response = Reaction.joins(:news).where("user_id == '#{user.user_id}'").map do |r|
+    tmp = r.as_json
+    tmp['news'] = News.find_by_news_id(r.news_id).as_json
+    tmp
+  end
+  response.to_json
+end
