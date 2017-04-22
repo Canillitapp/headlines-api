@@ -30,7 +30,7 @@ end
 get '/latest/:date' do
   content_type :json
 
-  news.latest_news_with_reactions(params[:date]).to_json(:methods => :source_name)
+  news.latest_news_with_reactions(params[:date]).to_json
 end
 
 post '/reactions/:news_id' do
