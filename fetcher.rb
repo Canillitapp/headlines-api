@@ -92,6 +92,17 @@ class NewsFetcher
       .order('date DESC')
   end
 
+  def latest_news_with_reactions(date)
+    latest_news(date).map do |i|
+      # convert the ActiveRecord to a hash despite its confusing name
+      # then add the source_name 'property'
+      tmp = i.as_json
+      tmp['source_name'] = i.source_name
+      tmp['reactions'] = Reaction.raw_reactions_by_news_id(i.news_id)
+      tmp
+    end
+  end
+
   def keywords_from_news(news, count)
     tmp = ''
     news.each do |n|
@@ -109,7 +120,7 @@ class NewsFetcher
   end
 
   def trending_news(date, count)
-    latest_news = latest_news(date)
+    latest_news = latest_news_with_reactions(date)
     keywords = keywords_from_news(latest_news, count * 2)
 
     trending = {}
@@ -120,11 +131,7 @@ class NewsFetcher
     latest_news.each do |i|
       keywords.each do |k|
         if i['title'].include? k.to_s
-          # convert the ActiveRecord to a hash despite its confusing name
-          # then add the source_name 'property'
-          h = i.as_json
-          h['source_name'] = i.source_name
-          trending[k.to_s] << h
+          trending[k.to_s] << i
           break
         end
       end
