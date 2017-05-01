@@ -53,6 +53,7 @@ GEM
     mini_portile2 (2.1.0)
     minitest (5.10.1)
     multipart-post (2.0.0)
+    mysql2 (0.4.5)
     nesty (1.0.2)
     nokogiri (1.6.8)
       mini_portile2 (~> 2.1.0)
@@ -92,6 +93,7 @@ DEPENDENCIES
   activerecord
   highscore
   metainspector
+  mysql2
   nokogiri
   rufus-scheduler
   rumoji

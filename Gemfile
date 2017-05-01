@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'sinatra'
+gem 'mysql2'
 gem 'sqlite3'
 gem 'nokogiri'
 gem 'rufus-scheduler'
