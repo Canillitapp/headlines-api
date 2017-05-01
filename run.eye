@@ -10,7 +10,7 @@ Eye.application 'canillitapp' do
   
   process :canillitapp_server do
     pid_file 'canillitapp_server.pid' # pid_path will be expanded with the working_dir
-      start_command 'bundle exec rackup -p4567 --host 0.0.0.0'
+      start_command 'bundle exec rackup -p4567 --host 0.0.0.0 -E development'
 
       # when no stop_command or stop_signals, default stop is [:TERM, 0.5, :KILL]
       # default `restart` command is `stop; start`
@@ -20,5 +20,12 @@ Eye.application 'canillitapp' do
 
       # ensure the CPU is below 30% at least 3 out of the last 5 times checked
       check :cpu, below: 70, times: [3, 5]
-    end
+  end
+  
+  process :canillitapp_news_fetcher do
+    pid_file 'canillitapp_fetch_news.pid'
+      start_command 'ruby fetcher_job.rb'
+      daemonize true
+      stdall 'canillitapp_fetch_news.log'
+  end
 end
