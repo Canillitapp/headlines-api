@@ -7,7 +7,7 @@ class News < ActiveRecord::Base
   delegate :name, :to => :source, :prefix => true
 
   def self.search_news_by_title(search)
-    News.where('title LIKE ?', "%#{search}%").order('date DESC').limit(200)
+    News.where('LOWER(title) LIKE ?', "%#{search.downcase}%").order('date DESC').limit(200)
   end
 
   def self.search_news_by_title_with_reactions(search)
