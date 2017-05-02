@@ -1,4 +1,4 @@
-<img src="https://github.com/Canillitapp/headlines-api/blob/feat-readme/readme-assets/canillitapp_readme_header.png?raw=true" height="60" />
+<img src="https://github.com/Canillitapp/headlines-api/blob/master/readme-assets/canillitapp_readme_header.png" height="60" />
 
 *canillita-api* is a simple service that gathers multiple RSS news and make them available to query through API calls.
 
