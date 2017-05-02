@@ -1,4 +1,5 @@
 _headlines logo_
+
 *canillita-api* is a simple service that gathers multiple RSS news and make them available to query through API calls.
 Works better with *[canillita-ios](https://github.com/Canillitapp/headlines-iOS)*, its iOS client.
 
@@ -10,6 +11,7 @@ Returns a list of `:quantity` _trending_ news from day `:yyyy-mm-dd`.
 __Example__
 
 __Request:__ `GET 127.0.0.1:4567/trending/2017-04-08/3`
+
 __Response:__
 ```
 {
@@ -78,6 +80,7 @@ Returns a list of all the news fetched that day ordered from most recent to olde
 __Example__
 
 __Request:__ `GET 127.0.0.1:4567/latest/2017-04-08`
+
 __Response:__
 
 ```
@@ -109,6 +112,7 @@ Searches all the news that contains `foo` on the title.
 __Example__
 
 __Request:__ `GET 127.0.0.1:4567/search/macri%20gato`
+
 __Response:__
 
 ```
