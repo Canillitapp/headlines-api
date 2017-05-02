@@ -1,6 +1,7 @@
 ![canillitapp-logo](https://github.com/Canillitapp/headlines-api/blob/feat-readme/readme-assets/canillitapp_readme_header.png?raw=true)
 
 *canillita-api* is a simple service that gathers multiple RSS news and make them available to query through API calls.
+
 Works better with *[canillita-ios](https://github.com/Canillitapp/headlines-iOS)*, its iOS client.
 
 # News examples
