@@ -64,6 +64,7 @@ GEM
       nokogiri
     pkg-config (1.1.7)
     public_suffix (2.0.4)
+    puma (3.8.2)
     rack (1.6.4)
     rack-protection (1.5.3)
       rack
@@ -106,6 +107,7 @@ DEPENDENCIES
   metainspector
   mysql2
   nokogiri
+  puma
   rufus-scheduler
   rumoji
   sanitize
