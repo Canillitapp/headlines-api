@@ -1,8 +1,8 @@
 ENV['RACK_ENV'] = 'test'
 
-require_relative '../fetcher.rb'
-require 'test/unit'
 require 'rack/test'
+require 'test/unit'
+require File.expand_path(File.dirname(__FILE__) + '/../fetcher.rb')
 
 # FetcherTest
 class FetcherTest < Test::Unit::TestCase
