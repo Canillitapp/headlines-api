@@ -8,3 +8,7 @@ production:
   db_username: 'root'
   db_password: ''
   db_database: 'canillitapp'
+
+test:
+  db_adapter: 'sqlite3'
+  db_database: 'news.db'

@@ -15,47 +15,54 @@ class NewsFetcher
     @logger = Logger.new(STDOUT)
   end
 
+  def self.url_from_news(item, feed_uri)
+    link_url = if item.link.is_a? RSS::Atom::Feed::Link
+                 item.link.href
+               else
+                 Sanitize.fragment(item.link)
+               end
+
+    # if the URL doesn't contain it's host like this:
+    # /notas/201705/187896-jorge-fernandez-diaz-miembro-academia-argentina-de-letras.html
+    unless link_url.start_with?('http://', 'https://')
+      link_url = "#{feed_uri.scheme}://#{feed_uri.host}/#{link_url.sub(/^\//, '')}"
+    end
+
+    # if the URL is malformed like this:
+    # http://www.perfil.com/http://trends.perfil.com/2016-12-31-3981-enterate-si-esta-noche-te-quedas-sin-whatsapp/
+    link_url.gsub(/^https?:\/\/.+(https?:\/\/)/, '\1')
+  end
+
+  def self.news_image_url(url)
+    page = MetaInspector.new(url)
+    page.images.best
+  rescue
+    nil
+  end
+
+  def self.date_from_news(item)
+    DateTime.parse(item.date.to_s).strftime('%s')
+  rescue
+    nil
+  end
+
   def save_news_from_source(source)
     feed_uri = URI.parse(source['url'])
     open(source['url']) do |rss|
       feed = RSS::Parser.parse(rss, false)
       feed.items.each do |item|
-        link_url = item.link
-
-        link_url = if link_url.is_a? RSS::Atom::Feed::Link
-                     item.link.href
-                   else
-                     Sanitize.fragment(item.link)
-                   end
-
-        # relative paths
-        link_url = "#{feed_uri.scheme}://#{feed_uri.host}/#{item.link.sub(/^\//, '')}" unless link_url.start_with?('http://', 'https://')
-
-        # if the URL is malformed like this:
-        # http://www.perfil.com/http://trends.perfil.com/2016-12-31-3981-enterate-si-esta-noche-te-quedas-sin-whatsapp/
-        link_url = link_url.gsub(/^https?:\/\/.+(https?:\/\/)/, '\1')
-
-        img_url = nil
-
-        begin
-          page = MetaInspector.new(link_url)
-          img_url = page.images.best
-        rescue => e
-          @logger.warn("Exception: #{e.message}")
-        end
-
-        title = Sanitize.fragment(item.title).strip
-
-        begin
-          date = DateTime.parse(item.date.to_s).strftime('%s')
-        rescue
-          date = DateTime.now.strftime('%s')
-        end
+        link_url = NewsFetcher.url_from_news(item, feed_uri)
 
         if News.where(url: link_url).exists?
           @logger.debug("#{date} - #{title[0...40]} already exists. Stop importing from this source")
           break
         else
+          img_url = NewsFetcher.news_image_url(link_url)
+          title = Sanitize.fragment(item.title).strip
+
+          date = NewsFetcher.date_from_news(item)
+          date = DateTime.now.strftime('%s') if date.nil?
+
           ActiveRecord::Base.connection_pool.with_connection do
             News.create(
               url: link_url,
