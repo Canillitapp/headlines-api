@@ -72,7 +72,7 @@ class NewsFetcher
               img_url: img_url
             )
           end
-          @logger.debug("#{date} - #{title[0...40]} | img: #{img_url[0...50]}")
+          @logger.debug("#{date} - #{title[0...40]}")
         end
       end
     end
