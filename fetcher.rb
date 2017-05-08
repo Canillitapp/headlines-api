@@ -54,7 +54,7 @@ class NewsFetcher
         link_url = NewsFetcher.url_from_news(item, feed_uri)
 
         if News.where(url: link_url).exists?
-          @logger.debug("#{date} - #{title[0...40]} already exists. Stop importing from this source")
+          @logger.debug("#{link_url[0...40]} already exists. Stop importing from this source")
           break
         else
           img_url = NewsFetcher.news_image_url(link_url)
