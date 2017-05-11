@@ -3,9 +3,19 @@ ENV['RACK_ENV'] = 'test'
 require 'rack/test'
 require 'test/unit'
 require File.expand_path(File.dirname(__FILE__) + '/../fetcher.rb')
+require File.expand_path(File.dirname(__FILE__) + '/../news.rb')
 
 # FetcherTest
 class FetcherTest < Test::Unit::TestCase
+  def self.startup
+    news = NewsFetcher.new
+    news.fetch
+  end
+
+  def self.shutdown
+    News.destroy_all
+  end
+
   def setup
     @rss = RSS::Maker.make('atom') do |maker|
       maker.channel.author = 'Betzerra'
@@ -34,6 +44,10 @@ class FetcherTest < Test::Unit::TestCase
         item.updated = Time.new(1985, 9, 9, 15, 30, 0, '-03:00')
       end
     end
+  end
+
+  def test_fetch_success
+    assert(News.count > 0)
   end
 
   def test_good_url_from_news
