@@ -60,4 +60,20 @@ class AppTest < Test::Unit::TestCase
     parsed_body = JSON.parse(last_response.body)
     assert parsed_body.count > 0
   end
+
+  def test_post_reaction
+    params = {
+      user_id: 1,
+      source: 'test',
+      reaction: '🍆'
+    }
+
+    post "reactions/#{News.first.news_id}", params
+    assert last_response.ok?
+
+    assert Reaction.where(news_id: News.first.news_id).count > 0
+
+    r = Reaction.where(news_id: News.first.news_id).first
+    assert_equal(':eggplant:', r.reaction)
+  end
 end
