@@ -3,6 +3,7 @@ ENV['RACK_ENV'] = 'test'
 require 'rack/test'
 require 'test/unit'
 require File.expand_path(File.dirname(__FILE__) + '/../fetcher.rb')
+require File.expand_path(File.dirname(__FILE__) + '/../news.rb')
 
 # FetcherTest
 class FetcherTest < Test::Unit::TestCase

@@ -11,4 +11,4 @@ production:
 
 test:
   db_adapter: 'sqlite3'
-  db_database: 'news.db'
+  db_database: 'test.db'
