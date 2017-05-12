@@ -36,19 +36,16 @@ end
 post '/reactions/:news_id' do
   content_type :json
 
-  user = User.where(identifier: params[:user_id], source: params[:source]).first
-
-  if user.nil?
-    User.create(identifier: params[:user_id], source: params[:source])
-    user = User.where(identifier: params[:user_id], source: params[:source]).first
-  end
-
+  user = User.find_or_create_by(identifier: params[:user_id], source: params[:source])
   emoji = Rumoji.encode(params[:reaction])
-  Reaction.create(
-    reaction: emoji,
+
+  Reaction.react(
     news_id: params[:news_id],
-    user_id: user.user_id
+    user_id: user.user_id,
+    reaction: emoji
   )
+
+  News.find_by_news_id(params[:news_id]).to_json
 end
 
 get '/search/:keywords' do

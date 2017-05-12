@@ -54,7 +54,7 @@ class AppTest < Test::Unit::TestCase
   def test_search
     keyword = News.first.title.split.first
 
-    get "/search/#{keyword}"
+    get "/search/#{URI.escape(keyword)}"
     assert last_response.ok?
 
     parsed_body = JSON.parse(last_response.body)
@@ -71,9 +71,35 @@ class AppTest < Test::Unit::TestCase
     post "reactions/#{News.first.news_id}", params
     assert last_response.ok?
 
-    assert Reaction.where(news_id: News.first.news_id).count > 0
+    assert_equal(1, Reaction.where(news_id: News.first.news_id).count)
 
     r = Reaction.where(news_id: News.first.news_id).first
     assert_equal(':eggplant:', r.reaction)
+  end
+
+  def test_post_unreaction
+    params = {
+      user_id: 1,
+      source: 'test',
+      reaction: '😂'
+    }
+
+    post "reactions/#{News.first.news_id}", params
+    assert last_response.ok?
+
+    reactions = Reaction.where(news_id: News.first.news_id).select do |i|
+      i.reaction == ':joy:'
+    end
+
+    assert_equal(reactions.count, 1)
+
+    post "reactions/#{News.first.news_id}", params
+    assert last_response.ok?
+
+    reactions = Reaction.where(news_id: News.first.news_id).select do |i|
+      i.reaction == ':joy:'
+    end
+
+    assert_equal(0, reactions.count)
   end
 end
