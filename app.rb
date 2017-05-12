@@ -45,7 +45,9 @@ post '/reactions/:news_id' do
     reaction: emoji
   )
 
-  News.find_by_news_id(params[:news_id]).to_json
+  n = News.find_by_news_id(params[:news_id]).as_json
+  n['reactions'] = Reaction.raw_reactions_by_news_id(params[:news_id])
+  n.to_json
 end
 
 get '/search/:keywords' do
