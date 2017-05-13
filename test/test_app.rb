@@ -10,6 +10,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../app.rb')
 # AppTest
 class AppTest < Test::Unit::TestCase
   include Rack::Test::Methods
+  self.test_order = :defined
 
   def self.startup
     news = NewsFetcher.new
@@ -101,5 +102,13 @@ class AppTest < Test::Unit::TestCase
     end
 
     assert_equal(0, reactions.count)
+  end
+
+  def test_get_reactions
+    get 'reactions/1/test'
+    assert last_response.ok?
+
+    parsed_body = JSON.parse(last_response.body)
+    assert parsed_body.count > 0
   end
 end

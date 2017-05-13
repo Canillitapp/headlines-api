@@ -2,8 +2,8 @@ require './database'
 require 'rumoji'
 
 class Reaction < ActiveRecord::Base
-  has_one :news
-  has_one :user
+  belongs_to :news
+  belongs_to :user
 
   def self.raw_reactions_by_news_id(news_id)
     reactions = Reaction.reactions_by_news_id(news_id)
