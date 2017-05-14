@@ -4,6 +4,7 @@ require './reaction'
 
 class News < ActiveRecord::Base
   belongs_to :source
+  has_many :reaction
   delegate :name, :to => :source, :prefix => true
 
   def self.search_news_by_title(search)
@@ -17,5 +18,14 @@ class News < ActiveRecord::Base
       tmp['reactions'] = Reaction.raw_reactions_by_news_id(i.news_id)
       tmp
     end
+  end
+
+  def self.popular_news
+    News
+      .select('news.*, count(reactions.reaction_id) as total_reactions')
+      .joins(:reaction)
+      .group('news.news_id')
+      .having('total_reactions > 0')
+      .order('total_reactions DESC')
   end
 end

@@ -111,4 +111,9 @@ class AppTest < Test::Unit::TestCase
     parsed_body = JSON.parse(last_response.body)
     assert parsed_body.count > 0
   end
+
+  def test_get_popular
+    get '/popular'
+    assert last_response.ok?
+  end
 end
