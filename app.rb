@@ -33,6 +33,12 @@ get '/latest/:date' do
   news.latest_news_with_reactions(params[:date]).to_json
 end
 
+get '/popular' do
+  content_type :json
+
+  News.popular_news.to_json
+end
+
 post '/reactions/:news_id' do
   content_type :json
 
