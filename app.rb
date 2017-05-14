@@ -36,7 +36,7 @@ end
 get '/popular' do
   content_type :json
 
-  News.popular_news.to_json
+  news.popular_news.to_json
 end
 
 post '/reactions/:news_id' do
