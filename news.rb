@@ -27,5 +27,6 @@ class News < ActiveRecord::Base
       .group('news.news_id')
       .having('total_reactions > 0')
       .order('total_reactions DESC')
+      .limit(200)
   end
 end
