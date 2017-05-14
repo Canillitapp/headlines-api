@@ -26,6 +26,6 @@ class News < ActiveRecord::Base
       .joins(:reaction)
       .group('news.news_id')
       .having('total_reactions > 0')
-      .order('total_reactions DESC')
+      .order('date DESC')
   end
 end
