@@ -156,4 +156,15 @@ class NewsFetcher
 
     { 'keywords' => ordered_keywords, 'news' => trending }
   end
+
+  def popular_news
+    News.popular_news.map do |i|
+      # convert the ActiveRecord to a hash despite its confusing name
+      # then add the source_name 'property'
+      tmp = i.as_json
+      tmp['source_name'] = i.source_name
+      tmp['reactions'] = Reaction.raw_reactions_by_news_id(i.news_id)
+      tmp
+    end
+  end
 end
