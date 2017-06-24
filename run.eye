@@ -10,7 +10,7 @@ Eye.application 'canillitapp' do
   
   process :canillitapp_server do
     pid_file 'canillitapp_server.pid' # pid_path will be expanded with the working_dir
-      start_command 'puma'
+      start_command 'puma -e production'
 
       # when no stop_command or stop_signals, default stop is [:TERM, 0.5, :KILL]
       # default `restart` command is `stop; start`
