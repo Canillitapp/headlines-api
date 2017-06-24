@@ -108,6 +108,7 @@ PLATFORMS
 DEPENDENCIES
   activerecord
   highscore
+  i18n
   metainspector
   mysql2
   nokogiri
@@ -122,4 +123,4 @@ DEPENDENCIES
   test-unit
 
 BUNDLED WITH
-   1.14.6
+   1.15.1

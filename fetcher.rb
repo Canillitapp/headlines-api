@@ -5,6 +5,7 @@ require 'logger'
 require 'highscore'
 require 'uri'
 require 'metainspector'
+require 'i18n'
 
 require './news'
 require './source'
@@ -113,7 +114,7 @@ class NewsFetcher
   def keywords_from_news(news, count)
     tmp = ''
     news.each do |n|
-      tmp << "#{n['title']}\n"
+      tmp << "#{transliterate(n['title'])}\n"
     end
 
     blacklist = Highscore::Blacklist.load_file 'blacklist.txt'
@@ -137,7 +138,7 @@ class NewsFetcher
 
     latest_news.each do |i|
       keywords.each do |k|
-        if i['title'].include? k.to_s
+        if transliterate(i['title']).include? k.to_s
           trending[k.to_s] << i
           break
         end
