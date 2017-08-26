@@ -8,6 +8,7 @@ require './fetcher'
 require './news'
 require './reaction'
 require './user'
+require './validations'
 
 news = NewsFetcher.new
 
@@ -23,8 +24,21 @@ end
 
 get '/trending/:date/:count' do
   content_type :json
+  date, count = params[:date], params[:count]
 
-  news.trending_news(params[:date], params[:count].to_i).to_json
+  if not Validations.is_valid_trending_date(date) then
+    status 400
+    body "invalid trending date, format must be like '2017-01-17' (year-month-day)"
+    return
+  end
+
+  if not Validations.is_valid_trending_count(count) then
+    status 400
+    body "invalid trending count, must be numeric"
+    return
+  end
+
+  news.trending_news(date, count.to_i).to_json
 end
 
 get '/latest/:date' do
