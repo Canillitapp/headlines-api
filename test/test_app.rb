@@ -28,6 +28,8 @@ class AppTest < Test::Unit::TestCase
 
   def test_trending_default
     get "/trending/#{Time.now.strftime('%Y-%m-%d')}"
+    follow_redirect!
+
     assert last_response.ok?
 
     parsed_body = JSON.parse(last_response.body)

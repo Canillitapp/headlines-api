@@ -19,22 +19,33 @@ end
 get '/trending/:date' do
   content_type :json
 
-  news.trending_news(params[:date], 3).to_json
+  redirect to("/trending/#{params[:date]}/3")
 end
 
 get '/trending/:date/:count' do
   content_type :json
-  date, count = params[:date], params[:count]
 
-  if not Validations.is_valid_trending_date(date) then
+  date  = params[:date]
+  count = params[:count]
+
+  unless Validations.is_valid_trending_date(date)
     status 400
-    body "invalid trending date, format must be like '2017-01-17' (year-month-day)"
+
+    response = {
+      error: "invalid trending date, format must be like '2017-01-17' "\
+        '(year-month-day)'
+    }
+    body response.to_json
     return
   end
 
-  if not Validations.is_valid_trending_count(count) then
+  unless Validations.is_valid_trending_count(count)
     status 400
-    body "invalid trending count, must be numeric"
+
+    response = {
+      error: 'invalid trending count, must be numeric'
+    }
+    body response.to_json
     return
   end
 
