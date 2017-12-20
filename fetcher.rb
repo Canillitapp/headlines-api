@@ -122,7 +122,6 @@ class NewsFetcher
     text.configure do
       # ignore short words such as "el", "que", "muy"
       set :short_words_threshold, 3
-      set :ignore_case, true
     end
 
     text.keywords.top(count)
