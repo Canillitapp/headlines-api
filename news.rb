@@ -1,10 +1,12 @@
 require './database'
 require './source'
 require './reaction'
+require './tag'
 
 class News < ActiveRecord::Base
   belongs_to :source
   has_many :reaction
+  has_and_belongs_to_many :tags
   delegate :name, :to => :source, :prefix => true
 
   def self.search_news_by_title(search)

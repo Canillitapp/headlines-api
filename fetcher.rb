@@ -48,6 +48,8 @@ class NewsFetcher
   end
 
   def save_news_from_source(source)
+    blacklist = Highscore::Blacklist.load_file 'blacklist.txt'
+
     feed_uri = URI.parse(source['url'])
     open(source['url']) do |rss|
       feed = RSS::Parser.parse(rss, false)
@@ -55,7 +57,7 @@ class NewsFetcher
         link_url = NewsFetcher.url_from_news(item, feed_uri)
 
         if News.where(url: link_url).exists?
-          @logger.debug("#{link_url[0...40]} already exists. Stop importing from this source")
+          # @logger.debug("#{link_url[0...40]} already exists. Stop importing from this source")
           break
         else
           img_url = NewsFetcher.news_image_url(link_url)
@@ -65,15 +67,33 @@ class NewsFetcher
           date = DateTime.now.strftime('%s') if date.nil?
 
           ActiveRecord::Base.connection_pool.with_connection do
-            News.create(
+            news = News.create(
               url: link_url,
               title: title,
               date: date,
               source_id: source['source_id'],
               img_url: img_url
             )
+
+            text = Highscore::Content.new news.title, blacklist
+            text.configure do
+              # ignore short words such as "el", "que", "muy"
+              set :short_words_threshold, 3
+            end
+
+            item_keys = text.keywords.top(5).map { |item| item.text }
+
+            item_keys.each do |item|
+              tag = Tag.where(name: item)
+              unless tag.exists?
+                tag = Tag.create(name: item)
+              end
+
+              news.tags << [tag]
+              # @logger.debug("#{news.title} -> #{tag.take.name}")
+            end
           end
-          @logger.debug("#{date} - #{title[0...40]}")
+          # @logger.debug("#{date} - #{title[0...40]}")
         end
       end
     end
