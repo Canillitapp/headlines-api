@@ -110,18 +110,8 @@ class NewsFetcher
     end
   end
 
-  def latest_news(date)
-    date_begin = Date.strptime("#{date} -0300", '%Y-%m-%d %z')
-    date_end = date_begin + 1
-
-    News
-      .where('date > ?', date_begin.to_time.to_i)
-      .where('date < ?', date_end.to_time.to_i)
-      .order('date DESC')
-  end
-
   def latest_news_with_reactions(date)
-    latest_news(date).map do |i|
+    News.from_date(date).map do |i|
       # convert the ActiveRecord to a hash despite its confusing name
       # then add the source_name 'property'
       tmp = i.as_json

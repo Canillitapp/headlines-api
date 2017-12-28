@@ -31,4 +31,14 @@ class News < ActiveRecord::Base
       .order('date DESC')
       .limit(200)
   end
+
+  def self.from_date(date)
+    date_begin = Date.strptime("#{date} -0300", '%Y-%m-%d %z')
+    date_end = date_begin + 1
+
+    News
+      .where('date > ?', date_begin.to_time.to_i)
+      .where('date < ?', date_end.to_time.to_i)
+      .order('date DESC')
+  end
 end
