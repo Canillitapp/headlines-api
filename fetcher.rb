@@ -132,7 +132,9 @@ class NewsFetcher
 
     latest_news.each do |i|
       keywords.each do |k|
-        if I18n.transliterate(i['title']).include? k.to_s
+        key = I18n.transliterate(k.to_s).downcase
+        title = I18n.transliterate(i['title']).downcase
+        if title.include? key
           trending[k.to_s] << i
           break
         end
