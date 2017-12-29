@@ -1,10 +1,12 @@
 require './database'
 require './source'
 require './reaction'
+require './tag'
 
 class News < ActiveRecord::Base
   belongs_to :source
   has_many :reaction
+  has_and_belongs_to_many :tags
   delegate :name, :to => :source, :prefix => true
 
   def self.search_news_by_title(search)
@@ -28,5 +30,15 @@ class News < ActiveRecord::Base
       .having('total_reactions > 0')
       .order('date DESC')
       .limit(200)
+  end
+
+  def self.from_date(date)
+    date_begin = Date.strptime("#{date} -0300", '%Y-%m-%d %z')
+    date_end = date_begin + 1
+
+    News
+      .where('date > ?', date_begin.to_time.to_i)
+      .where('date < ?', date_end.to_time.to_i)
+      .order('date DESC')
   end
 end

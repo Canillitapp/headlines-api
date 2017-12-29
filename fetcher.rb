@@ -48,6 +48,8 @@ class NewsFetcher
   end
 
   def save_news_from_source(source)
+    blacklist = Highscore::Blacklist.load_file 'blacklist.txt'
+
     feed_uri = URI.parse(source['url'])
     open(source['url']) do |rss|
       feed = RSS::Parser.parse(rss, false)
@@ -55,7 +57,7 @@ class NewsFetcher
         link_url = NewsFetcher.url_from_news(item, feed_uri)
 
         if News.where(url: link_url).exists?
-          @logger.debug("#{link_url[0...40]} already exists. Stop importing from this source")
+          # @logger.debug("#{link_url[0...40]} already exists. Stop importing from this source")
           break
         else
           img_url = NewsFetcher.news_image_url(link_url)
@@ -65,15 +67,33 @@ class NewsFetcher
           date = DateTime.now.strftime('%s') if date.nil?
 
           ActiveRecord::Base.connection_pool.with_connection do
-            News.create(
+            news = News.create(
               url: link_url,
               title: title,
               date: date,
               source_id: source['source_id'],
               img_url: img_url
             )
+
+            text = Highscore::Content.new news.title, blacklist
+            text.configure do
+              # ignore short words such as "el", "que", "muy"
+              set :short_words_threshold, 3
+            end
+
+            item_keys = text.keywords.top(5).map { |item| item.text }
+
+            item_keys.each do |item|
+              tag = Tag.where(name: item)
+              unless tag.exists?
+                tag = Tag.create(name: item)
+              end
+
+              news.tags << [tag]
+              # @logger.debug("#{news.title} -> #{tag.take.name}")
+            end
           end
-          @logger.debug("#{date} - #{title[0...40]}")
+          # @logger.debug("#{date} - #{title[0...40]}")
         end
       end
     end
@@ -90,18 +110,8 @@ class NewsFetcher
     end
   end
 
-  def latest_news(date)
-    date_begin = Date.strptime("#{date} -0300", '%Y-%m-%d %z')
-    date_end = date_begin + 1
-
-    News
-      .where('date > ?', date_begin.to_time.to_i)
-      .where('date < ?', date_end.to_time.to_i)
-      .order('date DESC')
-  end
-
   def latest_news_with_reactions(date)
-    latest_news(date).map do |i|
+    News.from_date(date).map do |i|
       # convert the ActiveRecord to a hash despite its confusing name
       # then add the source_name 'property'
       tmp = i.as_json
@@ -111,25 +121,9 @@ class NewsFetcher
     end
   end
 
-  def keywords_from_news(news, count)
-    tmp = ''
-    news.each do |n|
-      tmp << "#{I18n.transliterate(n['title'])}\n"
-    end
-
-    blacklist = Highscore::Blacklist.load_file 'blacklist.txt'
-    text = Highscore::Content.new tmp, blacklist
-    text.configure do
-      # ignore short words such as "el", "que", "muy"
-      set :short_words_threshold, 3
-    end
-
-    text.keywords.top(count)
-  end
-
   def trending_news(date, count)
     latest_news = latest_news_with_reactions(date)
-    keywords = keywords_from_news(latest_news, count * 2)
+    keywords = Tag.keywords_from_date(date, count * 2).map { |item| item.name }
 
     trending = {}
     keywords.each do |k|

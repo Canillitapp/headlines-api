@@ -1,3 +1,5 @@
+# this script updates all the news with an image as thumbnail (if there's one)
+
 ENV['RACK_ENV'] = 'development'
 
 require './database'

@@ -91,7 +91,12 @@ end
 get '/reactions/:user_id/:source' do
   content_type :json
   user = User.where(identifier: params[:user_id], source: params[:source]).first
-  reactions = Reaction.joins(:news).where(user: user).reverse_order.as_json(include: :news)
+  reactions = Reaction
+    .joins(:news)
+    .where(user: user)
+    .order('date DESC')
+    .limit(200)
+    .as_json(include: :news)
   reactions.each { |r| r['reaction'] = Rumoji.decode(r['reaction']) }
   reactions.to_json
 end
