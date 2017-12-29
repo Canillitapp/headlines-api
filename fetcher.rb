@@ -121,25 +121,9 @@ class NewsFetcher
     end
   end
 
-  def keywords_from_news(news, count)
-    tmp = ''
-    news.each do |n|
-      tmp << "#{I18n.transliterate(n['title'])}\n"
-    end
-
-    blacklist = Highscore::Blacklist.load_file 'blacklist.txt'
-    text = Highscore::Content.new tmp, blacklist
-    text.configure do
-      # ignore short words such as "el", "que", "muy"
-      set :short_words_threshold, 3
-    end
-
-    text.keywords.top(count)
-  end
-
   def trending_news(date, count)
     latest_news = latest_news_with_reactions(date)
-    keywords = keywords_from_news(latest_news, count * 2)
+    keywords = Tag.keywords_from_date(date, count * 2).map { |item| item.name }
 
     trending = {}
     keywords.each do |k|
