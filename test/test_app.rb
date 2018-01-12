@@ -118,4 +118,14 @@ class AppTest < Test::Unit::TestCase
     get '/popular'
     assert last_response.ok?
   end
+
+  def test_news_by_id
+    identifier = News.first.news_id
+
+    get "/news/#{identifier}"
+    assert last_response.ok?
+
+    parsed_body = JSON.parse(last_response.body)
+    assert parsed_body.count > 0
+  end
 end

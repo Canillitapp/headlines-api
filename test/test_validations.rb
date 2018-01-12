@@ -2,11 +2,11 @@ require "test/unit"
 require File.expand_path(File.dirname(__FILE__) + '/../validations.rb')
 
 class TestValidations < Test::Unit::TestCase
-    def test_valid_trending_count
-        assert Validations.is_valid_trending_count('1')
-        assert Validations.is_valid_trending_count('100')
-        assert Validations.is_valid_trending_count('') == false
-        assert Validations.is_valid_trending_count('100a') == false
+    def test_integer
+        assert Validations.is_integer('1')
+        assert Validations.is_integer('100')
+        assert Validations.is_integer('') == false
+        assert Validations.is_integer('100a') == false
     end
 
     def test_valid_trending_date

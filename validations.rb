@@ -11,7 +11,7 @@ class Validations
         end
     end
 
-    def self.is_valid_trending_count(count)
-        return !!count.match(IntRegex)
+    def self.is_integer(test)
+      return !!test.match(IntRegex)
     end
 end
