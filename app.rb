@@ -39,17 +39,35 @@ get '/trending/:date/:count' do
     return
   end
 
-  unless Validations.is_valid_trending_count(count)
+  unless Validations.is_integer(count)
     status 400
 
     response = {
-      error: 'invalid trending count, must be numeric'
+      error: 'invalid trending count, must be an integer'
     }
     body response.to_json
     return
   end
 
   news.trending_news(date, count.to_i).to_json
+end
+
+get '/news/:id' do
+  content_type :json
+
+  identifier = params[:id]
+
+  unless Validations.is_integer(identifier)
+    status 400
+
+    response = {
+      error: 'invalid identifier'
+    }
+    body response.to_json
+    return
+  end
+
+  News.find(identifier).to_json
 end
 
 get '/latest/:date' do
