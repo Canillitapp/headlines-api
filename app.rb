@@ -1,4 +1,5 @@
 require 'sinatra'
+require 'sinatra/cross_origin'
 require 'json'
 require 'active_record'
 require 'rumoji'
@@ -11,6 +12,10 @@ require './user'
 require './validations'
 
 news = NewsFetcher.new
+
+configure do
+  enable :cross_origin
+end
 
 after do
   ActiveRecord::Base.clear_active_connections!
