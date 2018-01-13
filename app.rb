@@ -1,5 +1,4 @@
 require 'sinatra'
-require 'sinatra/cross_origin'
 require 'json'
 require 'active_record'
 require 'rumoji'
@@ -13,12 +12,21 @@ require './validations'
 
 news = NewsFetcher.new
 
-configure do
-  enable :cross_origin
-end
-
 after do
   ActiveRecord::Base.clear_active_connections!
+end
+
+before do
+  # CORS for Sinatra https://gist.github.com/karlcoelho/17b908942c0837a2d534
+  headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+  headers['Access-Control-Allow-Origin'] = '*'
+  headers['Access-Control-Allow-Headers'] = 'accept, authorization, origin'
+end
+
+options '*' do
+  # CORS for Sinatra https://gist.github.com/karlcoelho/17b908942c0837a2d534
+  response.headers['Allow'] = 'HEAD,GET,PUT,DELETE,OPTIONS,POST'
+  response.headers['Access-Control-Allow-Headers'] = 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Cache-Control, Accept'
 end
 
 get '/trending/:date' do
