@@ -68,9 +68,9 @@ end
 get '/news/:id' do
   content_type :json
 
-  identifier = params[:id]
+  id = params[:id]
 
-  unless Validations.is_integer(identifier)
+  unless Validations.is_integer(id)
     status 400
 
     response = {
@@ -80,7 +80,7 @@ get '/news/:id' do
     return
   end
 
-  News.find(identifier).to_json
+  News.from_id(id).to_json
 end
 
 get '/latest/:date' do
