@@ -41,4 +41,12 @@ class News < ActiveRecord::Base
       .where('date < ?', date_end.to_time.to_i)
       .order('date DESC')
   end
+
+  def self.from_id(id)
+    n = News.find(id)
+    tmp = n.as_json
+    tmp['source_name'] = n.source_name
+    tmp['reactions'] = Reaction.raw_reactions_by_news_id(n.news_id)
+    tmp
+  end
 end
