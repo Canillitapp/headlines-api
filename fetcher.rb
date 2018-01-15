@@ -145,7 +145,11 @@ class NewsFetcher
       trending[y.to_s].length <=> trending[x.to_s].length
     end
 
+    # take 'count' keywords
     ordered_keywords = ordered_keywords.take(count).map(&:to_s)
+
+    # ignore keywords that doesn't contain a news
+    ordered_keywords = ordered_keywords.select { |k| trending[k].length > 0 }
 
     trending = trending.select do |k, _|
       ordered_keywords.include? k.to_s
