@@ -2,7 +2,7 @@ require 'active_record'
 require 'sinatra'
 require 'sinatra/config_file'
 
-config_file 'config/config.yml'
+config_file 'config/config.yml.erb'
 
 if settings.db_adapter == 'sqlite3'
   ActiveRecord::Base.establish_connection(
