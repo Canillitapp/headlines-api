@@ -55,8 +55,8 @@ def push_trending_news(date)
 
   item = news_to_broadcast(date)
 
-  User.where('ios_device_token IS NOT NULL').each do |u|
-    notification = notification_from_news_item(item, u.ios_device_token)
+  User.where('source = "iOS" AND device_token IS NOT NULL').each do |u|
+    notification = notification_from_news_item(item, u.device_token)
     single_async_push_to_token(connection, notification)
   end
 

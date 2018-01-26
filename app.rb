@@ -112,6 +112,16 @@ post '/reactions/:news_id' do
   n.to_json
 end
 
+post '/users/devicetoken' do
+  content_type :json
+
+  user = User.find_or_create_by(identifier: params[:user_id], source: params[:source])
+  user.device_token = params[:device_token]
+  user.save
+
+  user.to_json
+end
+
 get '/search/:keywords' do
   content_type :json
   News
