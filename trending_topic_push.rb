@@ -4,8 +4,8 @@ require './user'
 
 def news_to_broadcast(date)
   news = NewsFetcher.new
-  trending = news.trending_news(date, 1)
-  keyword = trending['keywords'].first
+  trending = news.trending_news(date, 3)
+  keyword = trending['keywords'].sample
 
   return if keyword.nil?
 
