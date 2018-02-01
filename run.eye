@@ -28,4 +28,11 @@ Eye.application 'canillitapp' do
       daemonize true
       stdall 'canillitapp_fetch_news.log'
   end
+
+  process :canillitapp_pushes do
+    pid_file 'canillitapp_pushes.pid'
+      start_command 'ruby trending_topic_push_job.rb'
+      daemonize true
+      stdall 'canillitapp_pushes.log'
+  end
 end
