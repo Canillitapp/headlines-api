@@ -74,6 +74,8 @@ GEM
     rack (2.0.4)
     rack-protection (2.0.0)
       rack
+    rack-test (0.8.2)
+      rack (>= 1.0, < 3)
     rake (12.3.0)
     rufus-scheduler (3.4.2)
       et-orbi (~> 1.0)
@@ -118,6 +120,7 @@ DEPENDENCIES
   mysql2
   nokogiri
   puma
+  rack-test
   rake
   rufus-scheduler
   rumoji
