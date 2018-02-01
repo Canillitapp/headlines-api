@@ -29,6 +29,14 @@ options '*' do
   response.headers['Access-Control-Allow-Headers'] = 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Cache-Control, Accept'
 end
 
+get '/' do
+  content_type :json
+  {
+    version: '1.0',
+    author: '@betzerra'
+  }.to_json
+end
+
 get '/trending/:date' do
   content_type :json
 
