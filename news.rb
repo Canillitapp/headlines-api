@@ -56,6 +56,7 @@ class News < ActiveRecord::Base
     news = News
       .joins(source: :category)
       .where(categories: { id: id })
+      .order('date DESC')
       .limit(50)
 
     news.map do |i|
