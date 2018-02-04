@@ -149,3 +149,7 @@ get '/reactions/:user_id/:source' do
   reactions.each { |r| r['reaction'] = Rumoji.decode(r['reaction']) }
   reactions.to_json
 end
+
+get '/news/category/:id' do
+  News.from_category(params[:id]).to_json
+end

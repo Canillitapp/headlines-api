@@ -49,4 +49,20 @@ class News < ActiveRecord::Base
     tmp['reactions'] = Reaction.raw_reactions_by_news_id(n.news_id)
     tmp
   end
+
+  def self.from_category(id)
+    # see nested asociations on .joins
+    # http://guides.rubyonrails.org/active_record_querying.html
+    news = News
+      .joins(source: :category)
+      .where(categories: { id: id })
+      .limit(50)
+
+    news.map do |i|
+      tmp = i.as_json
+      tmp['source_name'] = i.source_name
+      tmp['reactions'] = Reaction.raw_reactions_by_news_id(i['news_id'])
+      tmp
+    end
+  end
 end
