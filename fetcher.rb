@@ -110,19 +110,10 @@ class NewsFetcher
     end
   end
 
-  def latest_news_with_reactions(date)
-    News.from_date(date).map do |i|
-      # convert the ActiveRecord to a hash despite its confusing name
-      # then add the source_name 'property'
-      tmp = i.as_json
-      tmp['source_name'] = i.source_name
-      tmp['reactions'] = Reaction.raw_reactions_by_news_id(i.news_id)
-      tmp
-    end
-  end
-
   def trending_news(date, count)
-    latest_news = latest_news_with_reactions(date)
+    latest_news = News
+                      .from_date(date)
+                      .map { |i| News.add_reactions_to_news(i) }
     keywords = Tag.keywords_from_date(date, count * 2).map { |item| item.name }
 
     trending = {}
@@ -156,16 +147,5 @@ class NewsFetcher
     end
 
     { 'keywords' => ordered_keywords, 'news' => trending }
-  end
-
-  def popular_news
-    News.popular_news.map do |i|
-      # convert the ActiveRecord to a hash despite its confusing name
-      # then add the source_name 'property'
-      tmp = i.as_json
-      tmp['source_name'] = i.source_name
-      tmp['reactions'] = Reaction.raw_reactions_by_news_id(i.news_id)
-      tmp
-    end
   end
 end

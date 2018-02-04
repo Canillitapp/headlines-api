@@ -9,17 +9,20 @@ class News < ActiveRecord::Base
   has_and_belongs_to_many :tags
   delegate :name, :to => :source, :prefix => true
 
-  def self.search_news_by_title(search)
-    News.where('LOWER(title) LIKE ?', "%#{search.downcase}%").order('date DESC').limit(200)
+  def self.add_reactions_to_news(n)
+    # convert the ActiveRecord to a hash despite its confusing name
+    # then add the source_name 'property'
+    tmp = n.as_json
+    tmp['source_name'] = n.source_name
+    tmp['reactions'] = Reaction.raw_reactions_by_news_id(n.news_id)
+    tmp
   end
 
-  def self.search_news_by_title_with_reactions(search)
-    News.search_news_by_title(search).map do |i|
-      tmp = i.as_json
-      tmp['source_name'] = i.source_name
-      tmp['reactions'] = Reaction.raw_reactions_by_news_id(i.news_id)
-      tmp
-    end
+  def self.search_news_by_title(search)
+    News
+      .where('LOWER(title) LIKE ?', "%#{search.downcase}%")
+      .order('date DESC')
+      .limit(200)
   end
 
   def self.popular_news
@@ -43,11 +46,7 @@ class News < ActiveRecord::Base
   end
 
   def self.from_id(id)
-    n = News.find(id)
-    tmp = n.as_json
-    tmp['source_name'] = n.source_name
-    tmp['reactions'] = Reaction.raw_reactions_by_news_id(n.news_id)
-    tmp
+    News.add_reactions_to_news(News.find(id))
   end
 
   def self.from_category(id)
@@ -59,11 +58,6 @@ class News < ActiveRecord::Base
       .order('date DESC')
       .limit(50)
 
-    news.map do |i|
-      tmp = i.as_json
-      tmp['source_name'] = i.source_name
-      tmp['reactions'] = Reaction.raw_reactions_by_news_id(i['news_id'])
-      tmp
-    end
+    news.map { |i| News.add_reactions_to_news(i) }
   end
 end

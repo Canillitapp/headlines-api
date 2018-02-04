@@ -94,13 +94,19 @@ end
 get '/latest/:date' do
   content_type :json
 
-  news.latest_news_with_reactions(params[:date]).to_json
+  News
+    .from_date(params[:date])
+    .map { |i| News.add_reactions_to_news(i) }
+    .to_json
 end
 
 get '/popular' do
   content_type :json
 
-  news.popular_news.to_json
+  News
+    .popular_news_with_reactions
+    .map { |i| News.add_reactions_to_news(i) }
+    .to_json
 end
 
 post '/reactions/:news_id' do
@@ -134,6 +140,7 @@ get '/search/:keywords' do
   content_type :json
   News
     .search_news_by_title_with_reactions(params[:keywords])
+    .map { |i| News.add_reactions_to_news(i) }
     .to_json(methods: :source_name)
 end
 
