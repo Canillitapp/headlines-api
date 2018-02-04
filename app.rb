@@ -29,6 +29,14 @@ options '*' do
   response.headers['Access-Control-Allow-Headers'] = 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Cache-Control, Accept'
 end
 
+get '/' do
+  content_type :json
+  {
+    version: '1.0',
+    author: '@betzerra'
+  }.to_json
+end
+
 get '/trending/:date' do
   content_type :json
 
@@ -110,6 +118,16 @@ post '/reactions/:news_id' do
   n = News.find_by_news_id(params[:news_id]).as_json
   n['reactions'] = Reaction.raw_reactions_by_news_id(params[:news_id])
   n.to_json
+end
+
+post '/users/devicetoken' do
+  content_type :json
+
+  user = User.find_or_create_by(identifier: params[:user_id], source: params[:source])
+  user.device_token = params[:device_token]
+  user.save
+
+  user.to_json
 end
 
 get '/search/:keywords' do
