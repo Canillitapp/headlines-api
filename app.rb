@@ -104,7 +104,7 @@ get '/popular' do
   content_type :json
 
   News
-    .popular_news_with_reactions
+    .popular_news
     .map { |i| News.add_reactions_to_news(i) }
     .to_json
 end
@@ -139,7 +139,7 @@ end
 get '/search/:keywords' do
   content_type :json
   News
-    .search_news_by_title_with_reactions(params[:keywords])
+    .search_news_by_title(params[:keywords])
     .map { |i| News.add_reactions_to_news(i) }
     .to_json(methods: :source_name)
 end
