@@ -94,13 +94,19 @@ end
 get '/latest/:date' do
   content_type :json
 
-  news.latest_news_with_reactions(params[:date]).to_json
+  News
+    .from_date(params[:date])
+    .map { |i| News.add_reactions_to_news(i) }
+    .to_json
 end
 
 get '/popular' do
   content_type :json
 
-  news.popular_news.to_json
+  News
+    .popular_news
+    .map { |i| News.add_reactions_to_news(i) }
+    .to_json
 end
 
 post '/reactions/:news_id' do
@@ -133,7 +139,8 @@ end
 get '/search/:keywords' do
   content_type :json
   News
-    .search_news_by_title_with_reactions(params[:keywords])
+    .search_news_by_title(params[:keywords])
+    .map { |i| News.add_reactions_to_news(i) }
     .to_json(methods: :source_name)
 end
 
@@ -148,4 +155,8 @@ get '/reactions/:user_id/:source' do
     .as_json(include: :news)
   reactions.each { |r| r['reaction'] = Rumoji.decode(r['reaction']) }
   reactions.to_json
+end
+
+get '/news/category/:id' do
+  News.from_category(params[:id]).to_json
 end
