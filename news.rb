@@ -14,6 +14,7 @@ class News < ActiveRecord::Base
     # then add the source_name 'property'
     tmp = n.as_json
     tmp['source_name'] = n.source_name
+    tmp['category'] = n.source.category_name
     tmp['reactions'] = Reaction.raw_reactions_by_news_id(n.news_id)
     tmp
   end
