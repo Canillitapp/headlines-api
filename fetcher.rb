@@ -56,9 +56,12 @@ class NewsFetcher
       feed.items.each do |item|
         link_url = NewsFetcher.url_from_news(item, feed_uri)
 
-        if News.where(url: link_url).exists?
-          # @logger.debug("#{link_url[0...40]} already exists. Stop importing from this source")
-          break
+        # fixes weird case where several news from Infobae where being
+        # stored as http://xyz and https://xyz causing duplicated news
+        link_to_search = link_url.gsub(/^(http|https):\/\//, '')
+
+        if News.where('url LIKE ?', "%#{link_to_search}").exists?
+          # @logger.debug("#{link_url[0...40]} is duplicated")
         else
           img_url = NewsFetcher.news_image_url(link_url)
           title = Sanitize.fragment(item.title).strip
@@ -74,6 +77,7 @@ class NewsFetcher
               source_id: source['source_id'],
               img_url: img_url
             )
+            # @logger.debug("Saving #{link_url[0...40]}")
 
             text = Highscore::Content.new news.title, blacklist
             text.configure do
