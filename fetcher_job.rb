@@ -5,7 +5,7 @@ news = NewsFetcher.new
 
 scheduler = Rufus::Scheduler.new
 
-scheduler.every '10m', first_in: '3s', overlap: false do
+scheduler.every '30m', first_in: '3s', overlap: false do
   news.fetch
 end
 
