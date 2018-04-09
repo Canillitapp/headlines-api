@@ -24,7 +24,8 @@ def notification_from_news_item(item, token)
   notification.topic = 'ar.com.betzerra.headlines'
   notification.custom_payload = {
     'media-url' => item['img_url'],
-    'post-id' => item['news_id']
+    'post-id' => item['news_id'],
+    'post-url' => item['url']
   }
   notification
 end
