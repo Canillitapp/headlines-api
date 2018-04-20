@@ -6,7 +6,8 @@ require './tag'
 class News < ActiveRecord::Base
   belongs_to :source
   has_many :reaction
-  has_and_belongs_to_many :tags
+  has_many :news_tags
+  has_many :tags, :through => :news_tags
   delegate :name, :to => :source, :prefix => true
 
   def self.add_reactions_to_news(n)
