@@ -1,8 +1,10 @@
 require './database'
 require './news'
+require './news_tag'
 
 class Tag < ActiveRecord::Base
-  has_and_belongs_to_many :news
+  has_many :news_tags
+  has_many :news, :through => :news_tags
 
   def self.keywords_from_date(date, quantity)
     date_begin = Date.strptime("#{date} -0300", '%Y-%m-%d %z')
