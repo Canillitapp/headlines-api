@@ -69,13 +69,17 @@ class FetcherTest < Test::Unit::TestCase
 
   def test_good_image_url
     test_url = 'http://tn.com.ar/show/basicas/el-heredero-el-hijito-de-ricky-fort-le-hizo-honor-su-papa-con-un-gran-y-divertido-gesto_790807'
-    meta = NewsFetcher.meta_from_url(test_url)
+    fetcher = NewsFetcher.new
+
+    meta = fetcher.meta_from_url(test_url)
     assert_not_nil(meta['image_url'])
   end
 
   def test_bad_image_url
     test_url = 'http://442.perfil.com/2017-05-04-528775-por-que-se-enojo-buffon-con-los-hinchas-de-la-juventus/'
-    meta = NewsFetcher.meta_from_url(test_url)
+    fetcher = NewsFetcher.new
+
+    meta = fetcher.meta_from_url(test_url)
     assert_nil(meta['image_url'])
   end
 
