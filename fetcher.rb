@@ -14,7 +14,7 @@ require './source'
 class NewsFetcher
   def initialize
     @logger = Logger.new(STDOUT)
-    @logger.level = Logger::DEBUG #Logger::INFO
+    @logger.level = Logger::WARN #Logger::INFO
   end
 
   def self.url_from_news(item, feed_uri)
