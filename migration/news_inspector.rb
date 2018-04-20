@@ -44,7 +44,7 @@ class NewsFetcher
     meta = {}
     page = MetaInspector.new(url, :connection_timeout => 10, :read_timeout => 5)
     meta['image_url'] = page.images.best
-    meta['keywords'] = page.meta_tag['name']['keywords'].split(',')
+    meta['keywords'] = page.meta_tag['name']['keywords'].split(',').map { |i| i.lstrip }
     meta
   rescue => e
     @logger.error("Exception @ MetaInspector: #{e.message}")
