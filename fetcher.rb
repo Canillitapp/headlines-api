@@ -35,7 +35,7 @@ class NewsFetcher
     link_url.gsub(/^https?:\/\/.+(https?:\/\/)/, '\1')
   end
 
-  def meta_from_url(url)
+  def self.meta_from_url(url)
     meta = {}
     page = MetaInspector.new(url, :connection_timeout => 10, :read_timeout => 5)
     meta['image_url'] = page.images.best
@@ -96,7 +96,7 @@ class NewsFetcher
 
           # meta: will be used on image and extra keywords
           # (if source has meta_tags_enabled)
-          meta = meta_from_url(link_url)
+          meta = NewsFetcher.meta_from_url(link_url)
 
           # date
           date = NewsFetcher.date_from_news(item)
