@@ -14,7 +14,6 @@ require './source'
 class NewsFetcher
   def initialize
     @logger = Logger.new(STDOUT)
-    @logger.level = Logger::DEBUG #Logger::INFO
   end
 
   def self.url_from_news(item, feed_uri)
@@ -35,45 +34,11 @@ class NewsFetcher
     link_url.gsub(/^https?:\/\/.+(https?:\/\/)/, '\1')
   end
 
-  def meta_from_url(url)
-    meta = {}
-    page = MetaInspector.new(url, :connection_timeout => 10, :read_timeout => 5)
-    meta['image_url'] = page.images.best
-
-    keywords = page.meta_tag['name']['keywords']
-    unless keywords.nil?
-      meta['keywords'] = keywords.split(',').map { |i| i.lstrip }
-    end
-    meta
-  rescue => e
-    @logger.error("Exception @ MetaInspector: #{e.message}")
-    meta
-  end
-
-  def save_keywords(news, keywords, is_from_meta)
-    keywords.each do |item|
-      Tag.where(name: item).first_or_create do |tag|
-        NewsTag.create(
-          news: news,
-          tag: tag,
-          is_from_meta: is_from_meta
-        )
-      end
-    end
-  end
-
-  def save_highscore_keywords(news)
-    blacklist = Highscore::Blacklist.load_file 'blacklist.txt'
-
-    text = Highscore::Content.new news.title, blacklist
-    text.configure do
-      # ignore short words such as "el", "que", "muy"
-      set :short_words_threshold, 3
-    end
-
-    item_keys = text.keywords.top(5).map { |item| item.text }
-    @logger.debug("Saving keywords (Highscore): #{item_keys}")
-    save_keywords(news, item_keys, false)
+  def self.news_image_url(url)
+    page = MetaInspector.new(url)
+    page.images.best
+  rescue
+    nil
   end
 
   def self.date_from_news(item)
@@ -83,6 +48,8 @@ class NewsFetcher
   end
 
   def save_news_from_source(source)
+    blacklist = Highscore::Blacklist.load_file 'blacklist.txt'
+
     feed_uri = URI.parse(source['url'])
     open(source['url']) do |rss|
       feed = RSS::Parser.parse(rss, false)
@@ -94,24 +61,13 @@ class NewsFetcher
         link_to_search = link_url.gsub(/^(http|https):\/\//, '')
 
         if News.where('url LIKE ?', "%#{link_to_search}").exists?
-          @logger.debug("#{link_url[0...40]} is duplicated")
+          # @logger.debug("#{link_url[0...40]} is duplicated")
         else
+          img_url = NewsFetcher.news_image_url(link_url)
           title = Sanitize.fragment(item.title).strip
 
-          # meta: will be used on image and extra keywords
-          # (if source has meta_tags_enabled)
-          meta = meta_from_url(link_url)
-
-          # date
           date = NewsFetcher.date_from_news(item)
           date = DateTime.now.strftime('%s') if date.nil?
-
-          # image
-          image = meta['image_url']
-          if image.nil? && !item.enclosure.nil? && !item.enclosure.url.nil?
-            image = item.enclosure.url
-            @logger.debug("RSS image: #{image}")
-          end
 
           ActiveRecord::Base.connection_pool.with_connection do
             news = News.create(
@@ -119,20 +75,29 @@ class NewsFetcher
               title: title,
               date: date,
               source_id: source['source_id'],
-              img_url: image
+              img_url: img_url
             )
-            @logger.info("Saving #{link_url}")
-            @logger.info(title)
+            # @logger.debug("Saving #{link_url[0...40]}")
 
-            save_highscore_keywords(news)
+            text = Highscore::Content.new news.title, blacklist
+            text.configure do
+              # ignore short words such as "el", "que", "muy"
+              set :short_words_threshold, 3
+            end
 
-            if source['meta_tags_enabled'].nil? || meta['keywords'].nil?
-              @logger.debug('Skipping meta tags')
-            else
-              @logger.debug("Saving keywords (meta): #{meta['keywords']}")
-              save_keywords(news, meta['keywords'], true)
+            item_keys = text.keywords.top(5).map { |item| item.text }
+
+            item_keys.each do |item|
+              tag = Tag.where(name: item)
+              unless tag.exists?
+                tag = Tag.create(name: item)
+              end
+
+              news.tags << [tag]
+              # @logger.debug("#{news.title} -> #{tag.take.name}")
             end
           end
+          # @logger.debug("#{date} - #{title[0...40]}")
         end
       end
     end
