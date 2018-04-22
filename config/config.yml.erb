@@ -1,0 +1,14 @@
+development:
+  db_adapter: 'sqlite3'
+  db_database: 'news.db'
+
+production:
+  db_adapter: 'mysql2'
+  db_host: <%= ENV["DB_HOST"] || 'localhost' %>
+  db_username: <%= ENV["DB_USERNAME"] ||'root' %>
+  db_password: <%= ENV["DB_PASSWORD"] || '' %>
+  db_database: <%= ENV["DB_DATABASE"] || 'canillitapp' %>
+
+test:
+  db_adapter: 'sqlite3'
+  db_database: 'test.db'
