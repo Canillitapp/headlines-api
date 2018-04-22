@@ -14,6 +14,7 @@ require './source'
 class NewsFetcher
   def initialize
     @logger = Logger.new(STDOUT)
+    @blacklist = Highscore::Blacklist.load_file 'blacklist.txt'
   end
 
   def self.url_from_news(item, feed_uri)
@@ -48,7 +49,7 @@ class NewsFetcher
   end
 
   def save_news_from_source(source)
-    blacklist = Highscore::Blacklist.load_file 'blacklist.txt'
+
 
     feed_uri = URI.parse(source['url'])
     open(source['url']) do |rss|
@@ -79,7 +80,7 @@ class NewsFetcher
             )
             # @logger.debug("Saving #{link_url[0...40]}")
 
-            text = Highscore::Content.new news.title, blacklist
+            text = Highscore::Content.new news.title, @blacklist
             text.configure do
               # ignore short words such as "el", "que", "muy"
               set :short_words_threshold, 3
