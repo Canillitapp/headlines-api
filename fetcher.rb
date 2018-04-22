@@ -116,29 +116,39 @@ class NewsFetcher
   end
 
   def trending_news(date, count)
-    latest_news = News
-                      .from_date(date)
-                      .map { |i| News.add_reactions_to_news(i) }
+    keywords = Tag.keywords_from_date(date, count * 2)
 
-    keywords = Tag.keywords_from_date(date, count * 2).map { |item| item.name }
+    date_begin = Date.strptime("#{date} -0300", '%Y-%m-%d %z')
+    date_end = date_begin + 1
+
+    keywords_ids = keywords.map { |i| i.tag_id }
+    keywords_names = keywords.map { |i| i.name }
+
+    news = News
+           .select('news.*, tags.tag_id, tags.name')
+           .joins(:tags)
+           .where('date > ?', date_begin.to_time.to_i)
+           .where('date < ?', date_end.to_time.to_i)
+           .where('news_tags.tag_id' => keywords_ids)
+           .order('date DESC')
 
     trending = {}
-    keywords.each do |k|
+    keywords_names.each do |k|
       trending[k.to_s] = []
     end
 
-    latest_news.each do |i|
-      keywords.each do |k|
-        key = I18n.transliterate(k.to_s).downcase
-        title = I18n.transliterate(i['title']).downcase
-        if title.include? key
+    news.each do |i|
+      keywords_names.each do |k|
+        if i.title.split(' ').include? k
           trending[k.to_s] << i
-          break
         end
       end
     end
 
-    ordered_keywords = keywords.sort do |x, y|
+    # remove duplicate news
+    trending.each_value { |v| v.uniq! }
+
+    ordered_keywords = keywords_names.sort do |x, y|
       trending[y.to_s].length <=> trending[x.to_s].length
     end
 
@@ -150,6 +160,11 @@ class NewsFetcher
 
     trending = trending.select do |k, _|
       ordered_keywords.include? k.to_s
+    end
+
+    # add reactions and source_name to every news
+    trending.each do |k, v|
+      trending[k] = v.map { |i| News.add_reactions_to_news(i) }
     end
 
     { 'keywords' => ordered_keywords, 'news' => trending }
