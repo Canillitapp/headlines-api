@@ -118,6 +118,7 @@ class NewsFetcher
     latest_news = News
                       .from_date(date)
                       .map { |i| News.add_reactions_to_news(i) }
+
     keywords = Tag.keywords_from_date(date, count * 2).map { |item| item.name }
 
     trending = {}
