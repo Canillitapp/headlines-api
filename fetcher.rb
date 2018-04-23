@@ -139,7 +139,9 @@ class NewsFetcher
 
     news.each do |i|
       keywords_names.each do |k|
-        if i.title.split(' ').include? k
+        # remove any kind of punctuation on title so it's possible to match
+        # "tarifa," with keyword "tarifa"
+        if i.title.gsub(/[^[:word:]\s]/, '').split(' ').include? k
           trending[k.to_s] << i
         end
       end
