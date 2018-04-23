@@ -148,15 +148,31 @@ class NewsFetcher
     # remove duplicate news
     trending.each_value { |v| v.uniq! }
 
+    # sort keywords (first has more items)
     ordered_keywords = keywords_names.sort do |x, y|
       trending[y.to_s].length <=> trending[x.to_s].length
     end
 
-    # ignore keywords that doesn't contain a news
-    ordered_keywords = ordered_keywords.select { |k| trending[k].length > 0 }
+    # remove elements that are in more than one trending item
+    ordered_keywords.each do |k1|
+      trending[k1].each do |v1|
+        ordered_keywords.each do |k2|
+          next if k1 == k2
+          trending[k2].delete_if { |v2| v1.news_id == v2.news_id }
+        end
+      end
+    end
+
+    # sort keywords again (first has more items)
+    ordered_keywords = keywords_names.sort do |x, y|
+      trending[y.to_s].length <=> trending[x.to_s].length
+    end
 
     # take 'count' keywords
     ordered_keywords = ordered_keywords.take(count).map(&:to_s)
+
+    # ignore keywords that doesn't contain a news
+    ordered_keywords = ordered_keywords.select { |k| trending[k].length > 0 }
 
     trending = trending.select do |k, _|
       ordered_keywords.include? k.to_s
