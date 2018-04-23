@@ -116,7 +116,7 @@ class NewsFetcher
   end
 
   def trending_news(date, count)
-    keywords = Tag.keywords_from_date(date, count * 2)
+    keywords = Tag.keywords_from_date(date, count * 3)
 
     date_begin = Date.strptime("#{date} -0300", '%Y-%m-%d %z')
     date_end = date_begin + 1
@@ -139,7 +139,9 @@ class NewsFetcher
 
     news.each do |i|
       keywords_names.each do |k|
-        if i.title.split(' ').include? k
+        # remove any kind of punctuation on title so it's possible to match
+        # "tarifa," with keyword "tarifa"
+        if i.title.gsub(/[^[:word:]\s]/, '').split(' ').include? k
           trending[k.to_s] << i
         end
       end
@@ -148,15 +150,34 @@ class NewsFetcher
     # remove duplicate news
     trending.each_value { |v| v.uniq! }
 
+    # sort keywords (first has more items)
     ordered_keywords = keywords_names.sort do |x, y|
       trending[y.to_s].length <=> trending[x.to_s].length
     end
 
-    # ignore keywords that doesn't contain a news
-    ordered_keywords = ordered_keywords.select { |k| trending[k].length > 0 }
+    # remove elements that are in more than one trending item
+    ordered_keywords.each do |k1|
+      trending[k1].each do |v1|
+        ordered_keywords.each do |k2|
+          next if k1 == k2
+          trending[k2].delete_if { |v2| v1.news_id == v2.news_id }
+        end
+      end
+    end
+
+    # sort keywords again (first has more items)
+    ordered_keywords = keywords_names.sort do |x, y|
+      trending[y.to_s].length <=> trending[x.to_s].length
+    end
+
+    # debug
+    # ordered_keywords.each { |k| @logger.debug "#{k} (#{trending[k].length})" }
 
     # take 'count' keywords
     ordered_keywords = ordered_keywords.take(count).map(&:to_s)
+
+    # ignore keywords that doesn't contain a news
+    ordered_keywords = ordered_keywords.select { |k| trending[k].length > 0 }
 
     trending = trending.select do |k, _|
       ordered_keywords.include? k.to_s
