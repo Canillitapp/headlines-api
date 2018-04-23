@@ -116,7 +116,7 @@ class NewsFetcher
   end
 
   def trending_news(date, count)
-    keywords = Tag.keywords_from_date(date, count * 2)
+    keywords = Tag.keywords_from_date(date, count * 3)
 
     date_begin = Date.strptime("#{date} -0300", '%Y-%m-%d %z')
     date_end = date_begin + 1
@@ -170,7 +170,8 @@ class NewsFetcher
       trending[y.to_s].length <=> trending[x.to_s].length
     end
 
-    ordered_keywords.each { |k| @logger.debug "#{k} (#{trending[k].length})" }
+    # debug
+    # ordered_keywords.each { |k| @logger.debug "#{k} (#{trending[k].length})" }
 
     # take 'count' keywords
     ordered_keywords = ordered_keywords.take(count).map(&:to_s)
