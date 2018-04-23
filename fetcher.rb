@@ -170,6 +170,8 @@ class NewsFetcher
       trending[y.to_s].length <=> trending[x.to_s].length
     end
 
+    ordered_keywords.each { |k| @logger.debug "#{k} (#{trending[k].length})" }
+
     # take 'count' keywords
     ordered_keywords = ordered_keywords.take(count).map(&:to_s)
 
