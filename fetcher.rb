@@ -49,8 +49,6 @@ class NewsFetcher
   end
 
   def save_news_from_source(source)
-
-
     feed_uri = URI.parse(source['url'])
     open(source['url']) do |rss|
       feed = RSS::Parser.parse(rss, false)
@@ -62,7 +60,7 @@ class NewsFetcher
         link_to_search = link_url.gsub(/^(http|https):\/\//, '')
 
         if News.where('url LIKE ?', "%#{link_to_search}").exists?
-          # @logger.debug("#{link_url[0...40]} is duplicated")
+          @logger.debug("#{link_url[0...40]} is duplicated. s:#{source['source_id']}")
         else
           img_url = NewsFetcher.news_image_url(link_url)
           title = Sanitize.fragment(item.title).strip
@@ -78,7 +76,7 @@ class NewsFetcher
               source_id: source['source_id'],
               img_url: img_url
             )
-            # @logger.debug("Saving #{link_url[0...40]}")
+            @logger.debug("Saving #{link_url[0...40]}. s:#{source['source_id']}")
 
             text = Highscore::Content.new news.title, @blacklist
             text.configure do
@@ -106,12 +104,24 @@ class NewsFetcher
     @logger.warn("Exception: #{e.message}")
   end
 
+  def fetch_sources(sources)
+    threads = []
+    sources.each do |s|
+      threads << Thread.new do |t|
+        @logger.info("From #{s['name']} (#{s['url']})")
+        save_news_from_source(s)
+      end
+    end
+
+    threads.each do |t|
+      t.join
+    end
+  end
+
   def fetch
     @logger.info('Fetching news')
-
-    Source.all.each do |s|
-      @logger.info("From #{s['name']} (#{s['url']})")
-      save_news_from_source(s)
+    Source.all.each_slice(3) do |sources|
+      fetch_sources(sources)
     end
   end
 end
