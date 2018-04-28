@@ -4,13 +4,10 @@ require 'active_record'
 require 'rumoji'
 
 require './database'
-require './fetcher'
 require './news'
 require './reaction'
 require './user'
 require './validations'
-
-news = NewsFetcher.new
 
 after do
   ActiveRecord::Base.clear_active_connections!
@@ -70,7 +67,7 @@ get '/trending/:date/:count' do
     return
   end
 
-  news.trending_news(date, count.to_i).to_json
+  News.trending(date, count.to_i).to_json
 end
 
 get '/news/:id' do
