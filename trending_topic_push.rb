@@ -1,10 +1,9 @@
 require 'apnotic'
-require './fetcher'
+require './news'
 require './user'
 
 def news_to_broadcast(date)
-  news = NewsFetcher.new
-  trending = news.trending_news(date, 3)
+  trending = News.trending(date, 3)
   keyword = trending['keywords'].sample
 
   return if keyword.nil?
