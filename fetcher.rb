@@ -120,7 +120,7 @@ class NewsFetcher
 
   def fetch
     @logger.info('Fetching news')
-    Source.all.each_slice(3) do |sources|
+    Source.all.each_slice(8) do |sources|
       fetch_sources(sources)
     end
   end
