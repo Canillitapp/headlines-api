@@ -177,7 +177,7 @@ post '/content-views/' do
   content_view = ContentView.create(
     news_id: params[:news_id],
     user_id: user.user_id,
-    type: params[:context_from]
+    context_from: params[:context_from]
   )
 
   { 'content_view' => content_view }.to_json
