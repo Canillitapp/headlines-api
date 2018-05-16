@@ -3,6 +3,7 @@ require 'json'
 require 'active_record'
 require 'rumoji'
 
+require './content_view'
 require './database'
 require './news'
 require './reaction'
@@ -156,4 +157,28 @@ end
 
 get '/news/category/:id' do
   News.from_category(params[:id]).to_json
+end
+
+post '/content-views/' do
+  content_type :json
+
+  user = User
+         .where(identifier: params[:user_id], source: params[:user_source])
+         .first
+
+  if user.nil? || params[:news_id].nil?
+    status 404
+
+    response = { error: 'invalid or missing parameters' }
+    body response.to_json
+    return
+  end
+
+  content_view = ContentView.create(
+    news_id: params[:news_id],
+    user_id: user.user_id,
+    context_from: params[:context_from]
+  )
+
+  { 'content_view' => content_view }.to_json
 end
