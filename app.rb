@@ -162,9 +162,17 @@ end
 post '/content-views/' do
   content_type :json
 
+  if params[:user_id].nil? || params[:user_source].nil?
+    status 404
+
+    response = { error: 'invalid user' }
+    body response.to_json
+    return
+  end
+
   user = User
          .where(identifier: params[:user_id], source: params[:user_source])
-         .first
+         .first_or_create
 
   if user.nil? || params[:news_id].nil?
     status 404
