@@ -7,6 +7,7 @@ require './content_view'
 require './database'
 require './news'
 require './reaction'
+require './search'
 require './user'
 require './validations'
 
@@ -136,6 +137,17 @@ end
 
 get '/search/:keywords' do
   content_type :json
+
+  if !env['HTTP_USER_ID'].nil? && !env['HTTP_USER_SOURCE'].nil?
+
+    user = User.where(identifier: env['HTTP_USER_ID'],
+                      source: env['HTTP_USER_SOURCE']).first
+    Search.create(
+      criteria: params[:keywords],
+      user_id: user[:user_id]
+    )
+  end
+
   News
     .search_news_by_title(params[:keywords])
     .map { |i| News.add_reactions_to_news(i) }
