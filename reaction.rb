@@ -22,13 +22,12 @@ class Reaction < ActiveRecord::Base
   end
 
   def self.react(news_id:, user_id:, reaction:)
-    r = Reaction.where(
-      news_id: news_id,
-      user_id: user_id,
-      reaction: reaction
-    )
+    r = News.find(news_id)
+            .reaction
+            .where(user_id: user_id, reaction: reaction)
+            .first
 
-    if r.empty?
+    if r.nil?
       Reaction.create(
         reaction: reaction,
         news_id: news_id,
@@ -36,11 +35,7 @@ class Reaction < ActiveRecord::Base
         date: DateTime.now.strftime('%s')
       )
     else
-      Reaction.where(
-        news_id: news_id,
-        user_id: user_id,
-        reaction: reaction
-      ).delete_all
+      r.destroy
     end
   end
 end
