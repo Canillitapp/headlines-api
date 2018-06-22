@@ -2,7 +2,7 @@ require './database'
 require 'rumoji'
 
 class Reaction < ActiveRecord::Base
-  belongs_to :news
+  belongs_to :news, counter_cache: true
   belongs_to :user
 
   def self.raw_reactions_by_news_id(news_id)
