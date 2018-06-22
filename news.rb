@@ -38,7 +38,7 @@ class News < ActiveRecord::Base
       .group('news.news_id')
       .having('total_reactions > 0 OR content_views > 1')
       .order('date DESC')
-      .limit(100)
+      .limit(50)
   end
 
   def self.from_date(date)
