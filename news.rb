@@ -2,11 +2,13 @@ require './database'
 require './source'
 require './reaction'
 require './tag'
+require './content_view'
 
 class News < ActiveRecord::Base
   belongs_to :source
   has_many :reaction
   has_and_belongs_to_many :tags
+  has_many :content_view
   delegate :name, :to => :source, :prefix => true
 
   def self.add_reactions_to_news(n)
@@ -28,12 +30,15 @@ class News < ActiveRecord::Base
 
   def self.popular_news
     News
-      .select('news.*, count(reactions.reaction_id) as total_reactions')
-      .joins(:reaction)
+      .select('news.*,
+              count(reactions.reaction_id) as total_reactions,
+              count(content_views.id) as content_views')
+      .left_outer_joins(:reaction)
+      .left_outer_joins(:content_view)
       .group('news.news_id')
-      .having('total_reactions > 0')
+      .having('total_reactions > 0 OR content_views > 1')
       .order('date DESC')
-      .limit(200)
+      .limit(50)
   end
 
   def self.from_date(date)
