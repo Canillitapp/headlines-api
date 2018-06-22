@@ -31,7 +31,7 @@ class News < ActiveRecord::Base
   def self.popular_news
     News
       .select('news.*')
-      .joins(:reaction)
+      .where('reactions_count > 0 OR content_views_count > 1')
       .group('news.news_id')
       .order('date DESC')
       .limit(50)
