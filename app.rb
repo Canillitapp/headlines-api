@@ -8,6 +8,7 @@ require './database'
 require './news'
 require './reaction'
 require './search'
+require './source'
 require './user'
 require './validations'
 
@@ -169,6 +170,17 @@ end
 
 get '/news/category/:id' do
   News.from_category(params[:id]).to_json
+end
+
+get '/categories/' do
+  content_type :json
+
+  categories = Category.all.map do |c|
+    category = c.as_json
+    category['img_url'] = c.sources.joins(:news).first.news.last.img_url
+    category
+  end
+  categories.to_json
 end
 
 post '/content-views/' do
