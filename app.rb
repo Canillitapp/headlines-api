@@ -155,6 +155,18 @@ get '/search/:keywords' do
     .to_json(methods: :source_name)
 end
 
+get '/search/trending/' do
+  content_type :json
+
+  Search
+    .select('criteria, count(criteria) as quantity')
+    .group(:criteria)
+    .order('quantity DESC')
+    .limit(10)
+    .as_json(except: :id)
+    .to_json
+end
+
 get '/reactions/:user_id/:source' do
   content_type :json
   user = User.where(identifier: params[:user_id], source: params[:source]).first
