@@ -1,5 +1,5 @@
 GIT
-  remote: https://github.com/mwunsch/rumoji.git
+  remote: https://github.com/canillitapp/rumoji.git
   revision: ce802a9911121991a3cd68306fb926e5dd4eebaf
   specs:
     rumoji (0.5.0)
