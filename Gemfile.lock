@@ -1,3 +1,9 @@
+GIT
+  remote: https://github.com/mwunsch/rumoji.git
+  revision: ce802a9911121991a3cd68306fb926e5dd4eebaf
+  specs:
+    rumoji (0.5.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -79,7 +85,6 @@ GEM
     rake (12.3.1)
     rufus-scheduler (3.4.2)
       et-orbi (~> 1.0)
-    rumoji (0.5.0)
     sanitize (4.6.4)
       crass (~> 1.0.2)
       nokogiri (>= 1.4.4)
@@ -123,7 +128,7 @@ DEPENDENCIES
   rack-test
   rake
   rufus-scheduler
-  rumoji
+  rumoji!
   sanitize
   sinatra
   sinatra-contrib
@@ -134,4 +139,4 @@ RUBY VERSION
    ruby 2.3.1p112
 
 BUNDLED WITH
-   1.16.1
+   1.16.2
