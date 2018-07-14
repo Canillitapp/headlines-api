@@ -39,14 +39,14 @@ class AppTest < Test::Unit::TestCase
     assert last_response.ok?
   end
 
-  # no user_id should return 404
-  def test_post_content_view_404
+  # no user_id should return 400
+  def test_post_content_view_400
     user = User.first
 
     post '/content-views/',
          source: user.source,
          news_id: News.first.news_id
 
-    assert last_response.status == 404
+    assert last_response.status == 400
   end
 end
