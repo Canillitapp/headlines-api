@@ -9,6 +9,7 @@ require './news'
 require './reaction'
 require './search'
 require './source'
+require './tag'
 require './user'
 require './validations'
 
@@ -199,7 +200,7 @@ post '/content-views/' do
   content_type :json
 
   if params[:user_id].nil? || params[:user_source].nil?
-    status 404
+    status 400
 
     response = { error: 'invalid user' }
     body response.to_json
@@ -211,7 +212,7 @@ post '/content-views/' do
          .first_or_create
 
   if user.nil? || params[:news_id].nil?
-    status 404
+    status 400
 
     response = { error: 'invalid or missing parameters' }
     body response.to_json
@@ -225,4 +226,21 @@ post '/content-views/' do
   )
 
   { 'content_view' => content_view }.to_json
+end
+
+get '/tags/:name' do
+  content_type :json
+
+  if params[:name].nil?
+    status 400
+
+    response = { error: 'invalid or missing parameters' }
+    body response.to_json
+    return
+  end
+
+  Tag
+    .starting_with(params[:name])
+    .as_json(except: %i[tag_id blacklisted])
+    .to_json
 end

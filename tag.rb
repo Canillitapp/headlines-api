@@ -18,4 +18,11 @@ class Tag < ActiveRecord::Base
       .order('q DESC')
       .limit(quantity)
   end
+
+  def self.starting_with(value)
+    Tag
+      .where('name LIKE ?', "#{value}%")
+      .order('name')
+      .limit(20)
+  end
 end
