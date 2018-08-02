@@ -24,6 +24,10 @@ class NewsFetcher
                  Sanitize.fragment(item.link)
                end
 
+    # remove whitespaces from beginning and end to avoid what happened with
+    # iProfesional feed
+    link_url = link_url.strip
+
     # if the URL doesn't contain it's host like this:
     # /notas/201705/187896-jorge-fernandez-diaz-miembro-academia-argentina-de-letras.html
     unless link_url.start_with?('http://', 'https://')
