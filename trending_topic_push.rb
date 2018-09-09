@@ -39,8 +39,13 @@ def apns_connection
   #  url: 'https://api.development.push.apple.com:443'
   #)
 
+  if ENV["APN_CERT"].nil?
+    raise 'APN certificate missing'
+    return
+  end
+
   Apnotic::Connection.new(
-    cert_path: 'apns_development_production.pem'
+    cert_path: StringIO.new(ENV["APN_CERT"])
   )
 
   #Apnotic::Connection.new(
