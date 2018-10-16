@@ -40,13 +40,15 @@ def apns_connection
   #)
 
   if ENV["APN_CERT"].nil?
-    raise 'APN certificate missing'
-    return
+    # adding backwards compatibility to non-dokku instances
+    Apnotic::Connection.new(
+      cert_path: 'apns_development_production.pem'
+    )
+  else
+    Apnotic::Connection.new(
+      cert_path: StringIO.new(ENV["APN_CERT"])
+    )
   end
-
-  Apnotic::Connection.new(
-    cert_path: StringIO.new(ENV["APN_CERT"])
-  )
 
   #Apnotic::Connection.new(
   #  auth_method: :token,
