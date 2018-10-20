@@ -39,9 +39,16 @@ def apns_connection
   #  url: 'https://api.development.push.apple.com:443'
   #)
 
-  Apnotic::Connection.new(
-    cert_path: 'apns_development_production.pem'
-  )
+  if ENV["APN_CERT"].nil?
+    # adding backwards compatibility to non-dokku instances
+    Apnotic::Connection.new(
+      cert_path: 'apns_development_production.pem'
+    )
+  else
+    Apnotic::Connection.new(
+      cert_path: StringIO.new(ENV["APN_CERT"])
+    )
+  end
 
   #Apnotic::Connection.new(
   #  auth_method: :token,
