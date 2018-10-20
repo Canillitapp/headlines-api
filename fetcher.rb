@@ -105,7 +105,7 @@ class NewsFetcher
       end
     end
   rescue => e
-    @logger.warn("Exception: #{e.message}")
+    @logger.warn("Exception: #{e.message} at #{feed_uri}")
   end
 
   def fetch_sources(sources)
