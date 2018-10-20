@@ -12,6 +12,7 @@ class Interest < ActiveRecord::Base
       .joins(:tag)
       .where('user_id = ?', user_id)
       .order(score: :desc)
+      .limit(20)
   end
 
 end
