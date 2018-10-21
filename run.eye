@@ -20,6 +20,7 @@ Eye.application 'canillitapp' do
 
       # ensure the CPU is below 30% at least 3 out of the last 5 times checked
       check :cpu, below: 70, times: [3, 5]
+      check :http, url: 'http://127.0.0.1/popular', every: 5.minutes, times: [2, 5], timeout: 1.minute
   end
   
   process :canillitapp_news_fetcher do
