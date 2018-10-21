@@ -116,38 +116,47 @@ Searches all the news that contains `foo` on the title.
 
 __Example__
 
-__Request:__ `GET 127.0.0.1:4567/search/macri%20gato`
+__Request:__ `GET 127.0.0.1:4567/search/w20`
 
 __Response:__
 
 ```
 [{
-  "news_id": 134751,
-  "url": "http://www.perfil.com//politica/en-la-carpa-itinerante-docente-venden-remeras-con-la-leyenda-macri-gato.phtml",
-  "title": "En la carpa de los docentes se venden remeras con la leyenda \"Macri gato\"",
-  "date": 1492108721,
-  "source_id": 8,
-  "img_url": "http://www.perfil.com/orinoco-files/media/images/raw/2017/04/13/0413remeramacrigatog.jpg",
-  "source_name": "Perfil",
-  "reactions": []
+	"news_id": 592169,
+	"url": "https://tn.com.ar/sociedad/en-la-cumbre-del-w20-maxima-zorreguieta-reclamo-la-inclusion-de-las-mujeres_902589",
+	"title": "En la Cumbre del W20, Máxima Zorreguieta reclamó la inclusión de las mujeres",
+	"date": 1538594695,
+	"source_id": 1,
+	"img_url": "https://cdn.tn.com.ar/sites/default/files/styles/470x269/public/2018/10/03/maxima-w20.jpg",
+	"reactions_count": null,
+	"content_views_count": null,
+	"source_name": "TN",
+	"category": null,
+	"reactions": []
 }, {
-  "news_id": 94409,
-  "url": "http://www.perfil.com//politica/hackearon-la-cuenta-de-twitter-de-patricia-bullrich.phtml",
-  "title": "“Macri Gato”: hackearon la cuenta de Twitter de Patricia Bullrich",
-  "date": 1485461250,
-  "source_id": 8,
-  "img_url": "http://www.perfil.com/orinoco-files/media/images/raw/2017/01/26/0126patriciabullrichtuitsg2.jpg",
-  "source_name": "Perfil",
-  "reactions": []
+	"news_id": 591890,
+	"url": "http://www.lanacion.com.ar/2178006-con-macri-w20-gobierno-retoma-agenda-genero",
+	"title": "Con Macri en el W20, el Gobierno retoma la agenda de género",
+	"date": 1538582089,
+	"source_id": 3,
+	"img_url": "https://bucket3.glanacion.com/anexos/fotos/88/2782488.jpg",
+	"reactions_count": null,
+	"content_views_count": null,
+	"source_name": "La Nacion",
+	"category": null,
+	"reactions": []
 }, {
-  "news_id": 94363,
-  "url": "http://tn.com.ar/politica/le-hackearon-el-twitter-patricia-bullrich-macri-gato_768717",
-  "title": "Escandaloso hackeo del Twitter de Patricia Bullrich: \"Macri gato\"",
-  "date": 1485457233,
-  "source_id": 1,
-  "img_url": "http://cdn.tn.com.ar/sites/default/files/styles/470x269/public/2017/01/26/bullrich-va.jpg",
-  "source_name": "TN",
-  "reactions": []
+	"news_id": 591914,
+	"url": "https://www.infobae.com/fotos/2018/10/03/mujeres-del-mundo-se-reunieron-en-buenos-aires-para-la-cumbre-del-w20/",
+	"title": "Mujeres del mundo se reunieron en Buenos Aires para la cumbre del W20",
+	"date": 1538580621,
+	"source_id": 9,
+	"img_url": "https://www.infobae.com/new-resizer/fxfu01hzVPA2LJMqvVbAbpvqegw=/1200x0/filters:quality(100)/s3.amazonaws.com/arc-wordpress-client-uploads/infobae-wp/wp-content/uploads/2018/10/03100750/w20-93.jpg",
+	"reactions_count": null,
+	"content_views_count": null,
+	"source_name": "Infobae",
+	"category": null,
+	"reactions": []
 }]
 ```
 
