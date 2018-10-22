@@ -1,4 +1,5 @@
 require 'apnotic'
+require 'logger'
 require './news'
 require './user'
 
@@ -75,11 +76,13 @@ def single_async_push_to_token(connection, notification)
 end
 
 def push_trending_news(date)
+  logger = Logger.new(STDOUT)
   connection = apns_connection
 
   item = news_to_broadcast(date)
 
   User.where('source = "iOS" AND device_token IS NOT NULL').each do |u|
+    logger.debug("Treding topic push to: #{u.device_token}")
     notification = notification_from_news_item(item, u.device_token)
     single_async_push_to_token(connection, notification)
   end
