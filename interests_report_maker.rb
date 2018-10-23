@@ -94,10 +94,10 @@ class InterestsReportMaker
   def update_reports
     users = User
       .select(:user_id)
-      .where('last_report_date < ?', 1.day.ago)
+      .where('last_report_date < ?', 2.day.ago)
       .group(:user_id, :last_report_date)
       .order(:last_report_date)
-      .limit(50)
+      .limit(25)
 
     users.each do |u|
       @logger.debug("Updating #{u.user_id}")
