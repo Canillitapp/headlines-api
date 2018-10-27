@@ -64,7 +64,7 @@ class NewsFetcher
         link_to_search = link_url.gsub(/^(http|https):\/\//, '')
 
         if News.where('url LIKE ?', "%#{link_to_search}").exists?
-          @logger.debug("#{link_url[0...40]} is duplicated. s:#{source['source_id']}")
+          #@logger.debug("#{link_url[0...40]} is duplicated. s:#{source['source_id']}")
         else
           img_url = NewsFetcher.news_image_url(link_url)
           title = Sanitize.fragment(item.title).strip
@@ -105,7 +105,7 @@ class NewsFetcher
       end
     end
   rescue => e
-    @logger.warn("Exception: #{e.message}")
+    @logger.warn("Exception: #{e.message} at #{feed_uri}")
   end
 
   def fetch_sources(sources)

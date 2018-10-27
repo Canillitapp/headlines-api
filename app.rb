@@ -5,6 +5,7 @@ require 'rumoji'
 
 require './content_view'
 require './database'
+require './interest'
 require './news'
 require './reaction'
 require './search'
@@ -243,4 +244,14 @@ get '/tags/:name' do
     .starting_with(params[:name])
     .as_json(except: %i[tag_id blacklisted])
     .to_json
+end
+
+get '/interests/:user_id/:source' do
+  content_type :json
+
+  user = User
+           .where(identifier: params[:user_id], source: params[:source])
+           .first
+
+  Interest.from_user(user.user_id).to_json
 end

@@ -16,7 +16,8 @@ else
     host: settings.db_host,
     username: settings.db_username,
     password: settings.db_password,
-    database: settings.db_database
+    database: settings.db_database,
+    pool: 100
   )
 end
 
