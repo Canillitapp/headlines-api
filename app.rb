@@ -114,6 +114,17 @@ end
 post '/reactions/:news_id' do
   content_type :json
 
+  # user_id, source and reaction are mandatory fields
+  if params[:user_id].nil? || params[:source].nil? || params[:reaction].nil?
+    status 400
+
+    response = {
+      error: 'invalid payload'
+    }
+    body response.to_json
+    return
+  end
+
   user = User.find_or_create_by(identifier: params[:user_id], source: params[:source])
   emoji = Rumoji.encode(params[:reaction])
 

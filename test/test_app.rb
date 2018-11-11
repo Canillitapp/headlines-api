@@ -64,6 +64,39 @@ class AppTest < Test::Unit::TestCase
     assert parsed_body.count > 0
   end
 
+  def test_post_reaction_wrong_params
+    # no user_id -> 400
+    params = {
+      source: 'test',
+      reaction: '🍆'
+    }
+
+    post "reactions/#{News.first.news_id}", params
+    assert last_response.status == 400
+
+    # no source -> 400
+    params = {
+      user_id: 1,
+      reaction: '🍆'
+    }
+
+    post "reactions/#{News.first.news_id}", params
+    assert last_response.status == 400
+
+    # no reaction -> 400
+    params = {
+      user_id: 1,
+      source: 'test'
+    }
+
+    post "reactions/#{News.first.news_id}", params
+    assert last_response.status == 400
+
+    # no params -> 400
+    post "reactions/#{News.first.news_id}", {}
+    assert last_response.status == 400
+  end
+
   def test_post_reaction
     params = {
       user_id: 1,
