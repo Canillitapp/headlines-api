@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Canillitapp/headlines-api.svg?branch=master)](https://travis-ci.org/Canillitapp/headlines-api)
 
-it's spelled *can-e-she-tah*.
+it's pronounced *can-e-she-tah*.
 
 *canillita-api* is a simple service that gathers multiple RSS news and make them available to query through API calls.
 
