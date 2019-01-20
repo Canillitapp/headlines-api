@@ -72,6 +72,14 @@ class NewsFetcher
           date = NewsFetcher.date_from_news(item)
           date = DateTime.now.strftime('%s') if date.nil?
 
+          # this matches every title with "xx de <month> de <year>" commonly
+          # used for quoting news from other newspapers on Infobae
+          news_from_other_papers_reges = regex = /.+[0-9]+\sde\s(\bEnero\b|\bFebrero\b|\bMarzo\b|\bAbril\b|\bMayo\b|\bJunio\b|\bJulio\b|\bAgosto\b|\bSeptiembre\b|\bOctubre\b|\bNoviembre\b|\bDiciembre\b)\sde\s[0-9]+/i
+          if title.match(regex) && source['name'] == 'Infobae'
+            @logger.debug("Skipping #{title}")
+            next
+          end
+
           ActiveRecord::Base.connection_pool.with_connection do
             news = News.create(
               url: link_url,
