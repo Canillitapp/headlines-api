@@ -74,8 +74,8 @@ class NewsFetcher
 
           # this matches every title with "xx de <month> de <year>" commonly
           # used for quoting news from other newspapers on Infobae
-          news_from_other_papers_reges = regex = /.+[0-9]+\sde\s(\bEnero\b|\bFebrero\b|\bMarzo\b|\bAbril\b|\bMayo\b|\bJunio\b|\bJulio\b|\bAgosto\b|\bSeptiembre\b|\bOctubre\b|\bNoviembre\b|\bDiciembre\b)\sde\s[0-9]+/i
-          if title.match(regex) && source['name'] == 'Infobae'
+          news_from_other_papers_regex = /.+[0-9]+\sde\s(Enero|Febrero|Marzo|Abril|Mayo|Junio|Julio|Agosto|Septiembre|Octubre|Noviembre|Diciembre)\sde\s[0-9]+/i
+          if title.match(news_from_other_papers_regex) && source['name'] == 'Infobae'
             @logger.debug("Skipping #{title}")
             next
           end
