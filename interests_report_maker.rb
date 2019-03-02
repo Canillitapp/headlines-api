@@ -1,7 +1,9 @@
+require 'date'
 require 'logger'
 
 require './database'
 require './content_view'
+require './interaction'
 require './interest'
 require './reaction'
 require './tag'
@@ -14,55 +16,64 @@ class InterestsReportMaker
   end
 
   def report_from_user(user_id)
-    tags = []
+    interactions = []
 
     # getting all content_views tags
     content_views = ContentView
-                      .select('news_id')
+                      .select('news_id, date')
                       .where('user_id = ?', user_id)
 
     content_views.each do |c|
-      t = Tag
-            .joins(:news)
-            .where('news_tags.news_id = ?', c.news_id)
-            .where('tags.blacklisted = 0')
+      tags = Tag
+              .joins(:news)
+              .where('news_tags.news_id = ?', c.news_id)
+              .where('tags.blacklisted = 0')
 
-      # t is a ActiveRecord::Relation, I'm interested on getting all the objects
-      # from that relation (Tag objects).
-      tags.concat(t.to_a)
+      # tags is a ActiveRecord::Relation, I'm interested on getting all the objects
+      # from that relation (Tag objects) using to_a.
+      tags.to_a.each do |t|
+        i = Interaction.new(
+          tag_id: t.tag_id,
+          tag_name: t.name,
+          date: c.date,
+          is_reaction: false
+        )
+        interactions << i
+      end
     end
 
     # getting all reaction tags
     reactions = Reaction
-                  .select('news_id')
+                  .select('news_id, date')
                   .where('user_id = ?', user_id)
 
     reactions.each do |r|
-      t = Tag
-            .joins(:news)
-            .where('news_tags.news_id = ?', r.news_id)
-            .where('tags.blacklisted = 0')
+      tags = Tag
+              .joins(:news)
+              .where('news_tags.news_id = ?', r.news_id)
+              .where('tags.blacklisted = 0')
 
-      # t is a ActiveRecord::Relation, I'm interested on getting all the objects
-      # from that relation (Tag objects).
-      tags.concat(t.to_a)
+      # tags is a ActiveRecord::Relation, I'm interested on getting all the objects
+      # from that relation (Tag objects) using to_a.
+      tags.to_a.each do |t|
+        i = Interaction.new(
+          tag_id: t.tag_id,
+          tag_name: t.name,
+          date: Time.at(r.date),
+          is_reaction: true
+        )
+        interactions << i
+      end
     end
 
-    group = tags.group_by { |i| i.name }
-
-    # in case you want to return tags sorted alphabetically...
-    # group.select { |k, v| v.count > 1 }
-    # group.sort_by { |k, v| k.downcase.parameterize }
-
-    # group.each { |k, v| group[k] = v.count }
-    group = group.sort_by { |k, v| v.count }.reverse
+    group = interactions.group_by { |i| i.tag_name }
 
     interests = []
     group.each do |k, v|
       i = {
-        score: v.count,
+        score: v.inject(0) { |sum, x| sum + x.score },
         tag_id: v.first.tag_id,
-        tag_name: v.first.name
+        tag_name: v.first.tag_name
       }
       interests << i
     end
