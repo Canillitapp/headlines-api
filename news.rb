@@ -25,7 +25,7 @@ class News < ActiveRecord::Base
     News
       .where('LOWER(title) LIKE ?', "%#{search.downcase}%")
       .order('date DESC')
-      .limit(200)
+      .limit(50)
   end
 
   def self.popular_news
