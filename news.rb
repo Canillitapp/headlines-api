@@ -33,7 +33,7 @@ class News < ActiveRecord::Base
       .select('news.*')
       .where('reactions_count > 0 OR content_views_count > 1')
       .group('news.news_id')
-      .order('date DESC')
+      .order('news_id DESC')
       .limit(50)
   end
 
@@ -44,7 +44,7 @@ class News < ActiveRecord::Base
     News
       .where('date > ?', date_begin.to_time.to_i)
       .where('date < ?', date_end.to_time.to_i)
-      .order('date DESC')
+      .order('news_id DESC')
   end
 
   def self.from_id(id)
@@ -76,7 +76,7 @@ class News < ActiveRecord::Base
     news = News
       .joins(source: :category)
       .where(categories: { id: id })
-      .order('date DESC')
+      .order('news_id DESC')
       .limit(50)
 
     news.map { |i| News.add_reactions_to_news(i) }
@@ -97,7 +97,7 @@ class News < ActiveRecord::Base
            .where('date > ?', date_begin.to_time.to_i)
            .where('date < ?', date_end.to_time.to_i)
            .where('news_tags.tag_id' => keywords_ids)
-           .order('date DESC')
+           .order('news_id DESC')
 
     trending = {}
     keywords_names.each do |k|
