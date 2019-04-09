@@ -5,6 +5,8 @@ require './tag'
 require './content_view'
 
 class News < ActiveRecord::Base
+  NEWS_LIMIT = 30
+
   belongs_to :source
   has_many :reaction
   has_and_belongs_to_many :tags
@@ -25,7 +27,7 @@ class News < ActiveRecord::Base
     News
       .where('LOWER(title) LIKE ?', "%#{search.downcase}%")
       .order('news_id DESC')
-      .limit(50)
+      .limit(NEWS_LIMIT)
   end
 
   def self.popular_news
@@ -34,7 +36,7 @@ class News < ActiveRecord::Base
       .where('reactions_count > 0 OR content_views_count > 1')
       .group('news.news_id')
       .order('news_id DESC')
-      .limit(50)
+      .limit(NEWS_LIMIT)
   end
 
   def self.from_date(date)
@@ -58,7 +60,7 @@ class News < ActiveRecord::Base
       .where('tags.name' => tags)
       .group(:news_id)
       .order('matches DESC, date DESC')
-      .limit(50)
+      .limit(NEWS_LIMIT)
   end
 
   def self.from_tags_or(tags)
@@ -67,7 +69,7 @@ class News < ActiveRecord::Base
       .joins(:tags)
       .where('tags.name' => tags)
       .order('date DESC')
-      .limit(50)
+      .limit(NEWS_LIMIT)
   end
 
   def self.from_category(id)
@@ -77,7 +79,7 @@ class News < ActiveRecord::Base
       .joins(source: :category)
       .where(categories: { id: id })
       .order('news_id DESC')
-      .limit(50)
+      .limit(NEWS_LIMIT)
 
     news.map { |i| News.add_reactions_to_news(i) }
   end
