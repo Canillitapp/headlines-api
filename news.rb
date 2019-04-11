@@ -24,14 +24,10 @@ class News < ActiveRecord::Base
   end
 
   def self.search_news_by_title(search)
-    News.find_by_sql(
-      "SELECT `news`.*,
-      MATCH(title) AGAINST ('#{search}') as relevance
-      FROM `news`
-      WHERE MATCH(title) AGAINST ('#{search}')
-      ORDER BY relevance DESC, news_id DESC
-      LIMIT #{NEWS_LIMIT}"
-    )
+    News
+      .where('LOWER(title) LIKE ?', "%#{search.downcase}%")
+      .order('news_id DESC')
+      .limit(NEWS_LIMIT)
   end
 
   def self.popular_news
