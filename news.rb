@@ -25,7 +25,7 @@ class News < ActiveRecord::Base
 
   def self.search_news_by_title(search)
     News
-      .where('LOWER(title) LIKE ?', "%#{search.downcase}%")
+      .where('title LIKE ?', "%#{search}%")
       .order('news_id DESC')
       .limit(NEWS_LIMIT)
   end
