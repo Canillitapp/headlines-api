@@ -211,7 +211,10 @@ get '/reactions/:user_id/:source' do
 end
 
 get '/news/category/:id' do
-  News.from_category(params[:id]).to_json
+  content_type :json
+
+  page = [params[:page].to_i, 1].max
+  News.from_category(params[:id], page).to_json
 end
 
 get '/categories/' do

@@ -61,8 +61,8 @@ class News < ActiveRecord::Base
         .where('date > ?', date_begin.to_time.to_i)
         .where('date < ?', date_end.to_time.to_i)
         .offset(offset)
-        .limit(NEWS_LIMIT)
         .order('news_id DESC')
+        .limit(NEWS_LIMIT)
 
     end
   end
@@ -90,12 +90,15 @@ class News < ActiveRecord::Base
       .limit(NEWS_LIMIT)
   end
 
-  def self.from_category(id)
+  def self.from_category(id, page)
+    offset = (page - 1) * NEWS_LIMIT
+
     # see nested asociations on .joins
     # http://guides.rubyonrails.org/active_record_querying.html
     news = News
       .joins(source: :category)
       .where(categories: { id: id })
+      .offset(offset)
       .order('news_id DESC')
       .limit(NEWS_LIMIT)
 
