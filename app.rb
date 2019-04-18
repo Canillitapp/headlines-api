@@ -169,15 +169,18 @@ get '/search/:keywords' do
 
   user_id = env['HTTP_USER_ID']
   user_source = env['HTTP_USER_SOURCE']
+  keywords = params[:keywords]
 
   # search tracking
   if !user_id.nil? && !user_source.nil?
     user = User.find_or_create_by(identifier: user_id, source: user_source)
-    Search.create(criteria: params[:keywords], user_id: user[:user_id])
+    Search.create(criteria: keywords, user_id: user[:user_id])
   end
 
+  page = [params[:page].to_i, 1].max
+
   News
-    .search_news_by_title(params[:keywords])
+    .search_news_by_title(keywords, page)
     .map { |i| News.add_reactions_to_news(i) }
     .to_json(methods: :source_name)
 end

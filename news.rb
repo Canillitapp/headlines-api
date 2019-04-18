@@ -23,10 +23,13 @@ class News < ActiveRecord::Base
     tmp
   end
 
-  def self.search_news_by_title(search)
+  def self.search_news_by_title(search, page)
+    offset = (page - 1) * NEWS_LIMIT
+
     News
       .where('title LIKE ?', "%#{search}%")
       .order('news_id DESC')
+      .offset(offset)
       .limit(NEWS_LIMIT)
   end
 
