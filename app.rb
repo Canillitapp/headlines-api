@@ -109,8 +109,10 @@ end
 get '/latest/:date' do
   content_type :json
 
+  page = params[:page].to_i
+
   News
-    .from_date(params[:date])
+    .from_date(params[:date], page)
     .map { |i| News.add_reactions_to_news(i) }
     .to_json
 end
