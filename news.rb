@@ -23,10 +23,13 @@ class News < ActiveRecord::Base
     tmp
   end
 
-  def self.search_news_by_title(search)
+  def self.search_news_by_title(search, page)
+    offset = (page - 1) * NEWS_LIMIT
+
     News
       .where('title LIKE ?', "%#{search}%")
       .order('news_id DESC')
+      .offset(offset)
       .limit(NEWS_LIMIT)
   end
 
@@ -39,14 +42,29 @@ class News < ActiveRecord::Base
       .limit(NEWS_LIMIT)
   end
 
-  def self.from_date(date)
+  def self.from_date(date, page)
     date_begin = Date.strptime("#{date} -0300", '%Y-%m-%d %z')
     date_end = date_begin + 1
 
-    News
-      .where('date > ?', date_begin.to_time.to_i)
-      .where('date < ?', date_end.to_time.to_i)
-      .order('news_id DESC')
+    # if page is == 0 then pagination is disabled,
+    # in order to get retrocompatibility.
+
+    if page.zero? || page.nil?
+      News
+        .where('date > ?', date_begin.to_time.to_i)
+        .where('date < ?', date_end.to_time.to_i)
+        .order('news_id DESC')
+    else
+      offset = (page - 1) * NEWS_LIMIT
+
+      News
+        .where('date > ?', date_begin.to_time.to_i)
+        .where('date < ?', date_end.to_time.to_i)
+        .offset(offset)
+        .limit(NEWS_LIMIT)
+        .order('news_id DESC')
+
+    end
   end
 
   def self.from_id(id)
