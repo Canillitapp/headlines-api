@@ -165,14 +165,13 @@ end
 get '/search/:keywords' do
   content_type :json
 
-  if !env['HTTP_USER_ID'].nil? && !env['HTTP_USER_SOURCE'].nil?
+  user_id = env['HTTP_USER_ID']
+  user_source = env['HTTP_USER_SOURCE']
 
-    user = User.where(identifier: env['HTTP_USER_ID'],
-                      source: env['HTTP_USER_SOURCE']).first
-    Search.create(
-      criteria: params[:keywords],
-      user_id: user[:user_id]
-    )
+  # search tracking
+  if !user_id.nil? && !user_source.nil?
+    user = User.find_or_create_by(identifier: user_id, source: user_source)
+    Search.create(criteria: params[:keywords], user_id: user[:user_id])
   end
 
   News
