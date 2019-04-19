@@ -120,8 +120,10 @@ end
 get '/popular' do
   content_type :json
 
+  page = [params[:page].to_i, 1].max
+
   News
-    .popular_news
+    .popular_news(page)
     .map { |i| News.add_reactions_to_news(i) }
     .to_json
 end

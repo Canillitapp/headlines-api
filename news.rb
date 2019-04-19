@@ -33,12 +33,15 @@ class News < ActiveRecord::Base
       .limit(NEWS_LIMIT)
   end
 
-  def self.popular_news
+  def self.popular_news(page)
+    offset = (page - 1) * NEWS_LIMIT
+
     News
       .select('news.*')
       .where('reactions_count > 0 OR content_views_count > 1')
       .group('news.news_id')
       .order('news_id DESC')
+      .offset(offset)
       .limit(NEWS_LIMIT)
   end
 
