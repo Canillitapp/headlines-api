@@ -131,8 +131,9 @@ class NewsFetcher
   end
 
   def fetch
+    # we only fetch sources that are enabled (a.k.a "still works")
     @logger.info('Fetching news')
-    Source.all.each_slice(8) do |sources|
+    Source.where('fetch_enabled = 1').each_slice(8) do |sources|
       fetch_sources(sources)
     end
   end
