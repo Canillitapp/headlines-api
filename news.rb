@@ -5,7 +5,7 @@ require './tag'
 require './content_view'
 
 class News < ActiveRecord::Base
-  NEWS_LIMIT = 20
+  NEWS_LIMIT = 30
 
   belongs_to :source
   has_many :reaction
