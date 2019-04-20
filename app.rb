@@ -224,7 +224,10 @@ get '/categories/' do
 
   categories = Category.all.map do |c|
     category = c.as_json
-    category['img_url'] = c.sources.joins(:news).first.news.last.img_url
+    news_source = c.sources.joins(:news).first
+    unless news_source.nil?
+      category['img_url'] = news_source.news.last.img_url
+    end
     category
   end
   categories.to_json
