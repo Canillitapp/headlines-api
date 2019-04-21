@@ -29,7 +29,7 @@ class News < ActiveRecord::Base
     offset = (page - 1) * NEWS_LIMIT
 
     News
-      .where('title LIKE ?', "%#{search}%")
+      .where('MATCH (title) AGAINST (? IN BOOLEAN MODE)', search)
       .order('news_id DESC')
       .offset(offset)
       .limit(NEWS_LIMIT)
