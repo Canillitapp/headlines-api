@@ -89,25 +89,6 @@ class News < ActiveRecord::Base
     News.add_reactions_to_news(News.find(id))
   end
 
-  def self.from_tags_and(tags)
-    News
-      .select('news.*, count(news.news_id) as matches')
-      .joins(:tags)
-      .where('tags.name' => tags)
-      .group(:news_id)
-      .order('matches DESC, date DESC')
-      .limit(NEWS_LIMIT)
-  end
-
-  def self.from_tags_or(tags)
-    News
-      .select('news.*')
-      .joins(:tags)
-      .where('tags.name' => tags)
-      .order('date DESC')
-      .limit(NEWS_LIMIT)
-  end
-
   def self.from_category(id, page)
     offset = (page - 1) * NEWS_LIMIT
 
