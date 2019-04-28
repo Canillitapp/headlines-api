@@ -3,6 +3,7 @@ require 'json'
 require 'active_record'
 require 'rumoji'
 
+require './butler'
 require './content_view'
 require './database'
 require './interest'
@@ -13,6 +14,8 @@ require './source'
 require './tag'
 require './user'
 require './validations'
+
+butler = Butler.new(settings.redis_url)
 
 after do
   ActiveRecord::Base.clear_active_connections!
@@ -72,7 +75,7 @@ get '/trending/:date/:count' do
     return
   end
 
-  News.trending(date, count.to_i).to_json
+  butler.trending(date, count.to_i)
 end
 
 get '/news/:id' do
@@ -110,11 +113,7 @@ get '/latest/:date' do
   content_type :json
 
   page = params[:page].to_i
-
-  News
-    .from_date(params[:date], page)
-    .map { |i| News.add_reactions_to_news(i) }
-    .to_json
+  butler.latest(params[:date], page)
 end
 
 get '/popular' do
@@ -122,10 +121,7 @@ get '/popular' do
 
   page = [params[:page].to_i, 1].max
 
-  News
-    .popular_news(page)
-    .map { |i| News.add_reactions_to_news(i) }
-    .to_json
+  butler.popular(page)
 end
 
 post '/reactions/:news_id' do
@@ -181,10 +177,7 @@ get '/search/:keywords' do
 
   page = [params[:page].to_i, 1].max
 
-  News
-    .search_news_by_title(keywords, page)
-    .map { |i| News.add_reactions_to_news(i) }
-    .to_json(methods: :source_name)
+  butler.search(keywords, page)
 end
 
 get '/search/trending/' do
@@ -216,7 +209,7 @@ get '/news/category/:id' do
   content_type :json
 
   page = [params[:page].to_i, 1].max
-  News.from_category(params[:id], page).to_json
+  butler.category(params[:id], page)
 end
 
 get '/categories/' do
