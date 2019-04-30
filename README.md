@@ -7,9 +7,9 @@ it's pronounced *can-e-she-tah*.
 *canillita-api* is a simple service that gathers multiple RSS news and make them available to query through API calls.
 
 # Clients
-- iOS: [headlines-ios](https://github.com/Canillitapp/headlines-iOS)
-- Android: [headlines-react](https://github.com/Canillitapp/headlines-react)
-- Web: [headlines-web](https://github.com/Canillitapp/headlines-web)
+- iOS: [headlines-ios](https://github.com/Canillitapp/headlines-iOS) [iTunes link](https://itunes.apple.com/ar/app/canillitapp/id1148447560?l=en&mt=8)
+- Android: [headlines-react](https://github.com/Canillitapp/headlines-react) [Google Play link](https://play.google.com/store/apps/details?id=com.headlinesreact&hl=en)
+- Web: [headlines-web](https://github.com/Canillitapp/headlines-web) [Our website](https://canillitapp.com)
 - CLI (rust): [canillitapp-cli-rust](https://github.com/betzerra/canillitapp-cli-rust)
 
 
