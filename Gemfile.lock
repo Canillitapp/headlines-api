@@ -87,6 +87,7 @@ GEM
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rake (12.3.2)
+    redis (4.1.0)
     rufus-scheduler (3.5.2)
       fugit (~> 1.1, >= 1.1.5)
     sanitize (5.0.0)
@@ -131,6 +132,7 @@ DEPENDENCIES
   puma
   rack-test
   rake
+  redis
   rufus-scheduler
   rumoji!
   sanitize

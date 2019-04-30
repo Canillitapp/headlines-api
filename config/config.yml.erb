@@ -1,6 +1,7 @@
 development:
   db_adapter: 'sqlite3'
   db_database: 'news.db'
+  redis_url: <%= ENV["REDIS_URL_FULL"] %>
 
 production:
   db_adapter: 'mysql2'
@@ -8,7 +9,9 @@ production:
   db_username: <%= ENV["DB_USERNAME"] ||'root' %>
   db_password: <%= ENV["DB_PASSWORD"] || '' %>
   db_database: <%= ENV["DB_DATABASE"] || 'canillitapp' %>
+  redis_url: <%= ENV["REDIS_URL_FULL"] %>
 
 test:
   db_adapter: 'sqlite3'
   db_database: 'test.db'
+  redis_url: <%= ENV["REDIS_URL_FULL"] %>

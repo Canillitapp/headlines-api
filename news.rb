@@ -52,7 +52,7 @@ class News < ActiveRecord::Base
     # if page is == 0 then pagination is disabled,
     # in order to get retrocompatibility.
 
-    if page.zero? || page.nil?
+    if page.nil? || page.zero?
       News
         .where('date > ?', date_begin.to_time.to_i)
         .where('date < ?', date_end.to_time.to_i)
