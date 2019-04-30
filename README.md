@@ -6,7 +6,12 @@ it's pronounced *can-e-she-tah*.
 
 *canillita-api* is a simple service that gathers multiple RSS news and make them available to query through API calls.
 
-Works better with *[canillita-ios](https://github.com/Canillitapp/headlines-iOS)*, its iOS client.
+# Clients
+- iOS: [headlines-ios](https://github.com/Canillitapp/headlines-iOS)
+- Android: [headlines-react](https://github.com/Canillitapp/headlines-react)
+- Web: [headlines-web](https://github.com/Canillitapp/headlines-web)
+- CLI (rust): [canillitapp-cli-rust](https://github.com/betzerra/canillitapp-cli-rust)
+
 
 # News examples
 - `GET /trending/:yyyy-mm-dd/:quantity`
