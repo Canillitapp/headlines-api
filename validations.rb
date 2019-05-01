@@ -11,6 +11,15 @@ class Validations
         end
     end
 
+    def self.is_valid_year_month_date(date)
+      begin
+          Date.strptime(date, '%Y-%m')
+          return true
+      rescue ArgumentError
+        return false
+      end
+    end
+
     def self.is_integer(test)
       return !!test.match(IntRegex)
     end

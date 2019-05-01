@@ -116,6 +116,25 @@ get '/latest/:date' do
   butler.latest(params[:date], page)
 end
 
+get %r{/popular/([0-9]{4}-[0-9]{2})} do
+  date = params[:captures].first
+
+  unless Validations.is_valid_year_month_date(date)
+    status 400
+
+    response = {
+      error: "invalid date, format must be like '2019-01' (year-month)"
+    }
+    body response.to_json
+    return
+  end
+
+  date_begin = Date.strptime(date, '%Y-%m')
+  date_end = date_begin >> 1 # >> 1 goes one month in the future
+
+  butler.popular_between(date_begin, date_end)
+end
+
 get '/popular' do
   content_type :json
 
