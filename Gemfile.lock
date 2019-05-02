@@ -47,6 +47,7 @@ GEM
     fugit (1.1.9)
       et-orbi (~> 1.1, >= 1.1.7)
       raabro (~> 1.1)
+    hashable (0.1.2)
     highscore (1.2.1)
       whatlanguage (>= 1.0.0)
     http-2 (0.10.1)
@@ -77,6 +78,10 @@ GEM
       mini_portile2 (~> 2.4.0)
     nokogumbo (2.0.1)
       nokogiri (~> 1.8, >= 1.8.4)
+    omnicat (0.3.0)
+      hashable (~> 0.1, >= 0.1.2)
+    omnicat-bayes (0.3.0)
+      omnicat (~> 0.3.0)
     power_assert (1.1.4)
     public_suffix (3.0.3)
     puma (3.12.1)
@@ -129,6 +134,7 @@ DEPENDENCIES
   metainspector
   mysql2
   nokogiri
+  omnicat-bayes
   puma
   rack-test
   rake

@@ -8,17 +8,19 @@ class News < ActiveRecord::Base
   NEWS_LIMIT = 30
 
   belongs_to :source
+  belongs_to :category, foreign_key: 'bayes_category_id'
   has_many :reaction
   has_and_belongs_to_many :tags
   has_many :content_view
   delegate :name, :to => :source, :prefix => true
+  delegate :name, :to => :category, :prefix => 'bayes_category', :allow_nil => true
 
   def self.add_reactions_to_news(n)
     # convert the ActiveRecord to a hash despite its confusing name
     # then add the source_name 'property'
     tmp = n.as_json
     tmp['source_name'] = n.source_name
-    tmp['category'] = n.source.category_name
+    tmp['category'] = n.source.category_name || n.bayes_category_name
     tmp['reactions'] = Reaction.raw_reactions_by_news_id(n.news_id)
     tmp
   end
@@ -111,13 +113,24 @@ class News < ActiveRecord::Base
 
     # see nested asociations on .joins
     # http://guides.rubyonrails.org/active_record_querying.html
-    news = News
+    news_from_categories = News
       .joins(source: :category)
       .where(categories: { id: id })
       .offset(offset)
       .order('news_id DESC')
       .limit(NEWS_LIMIT)
 
+    news_from_bayes = News
+      .where(bayes_category_id: id)
+      .offset(offset)
+      .order('news_id DESC')
+      .limit(NEWS_LIMIT)
+
+    news = []
+    news += news_from_categories.to_a
+    news += news_from_bayes.to_a
+    news.uniq!(&:news_id)
+    news = news.sort_by { |i| -i.news_id }
     news.map { |i| News.add_reactions_to_news(i) }
   end
 
