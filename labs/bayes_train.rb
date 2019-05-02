@@ -5,7 +5,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../news.rb')
 require File.expand_path(File.dirname(__FILE__) + '/../source.rb')
 
 OmniCat.configure do |config|
-  config.auto_train = :off
+  config.auto_train = :continues
 end
 
 DEPORTES_SLUG = 'deportes'
@@ -19,6 +19,7 @@ bayes.add_category(ESPECTACULOS_SLUG)
 bayes.add_category(INTERNACIONALES_SLUG)
 bayes.add_category(POLITICA_SLUG)
 bayes.add_category(TECNOLOGIA_SLUG)
+bayes.add_category(DEPORTES_SLUG)
 
 News
   .all
@@ -57,12 +58,23 @@ News
   end
 
 News
-  .from_date('2019-01-01', nil)
+  .all
+  .joins(source: :category)
+  .where(categories: { id: 5 })
+  .each do |i|
+
+    bayes.train(DEPORTES_SLUG, i.title)
+  end
+
+# puts bayes.to_hash
+
+News
+  .from_date('2019-04-30', nil)
   .each do |i|
 
     if i.source.category_id.nil?
       result = bayes.classify(i.title)
-      if result.top_score.percentage > 50
+      if result.top_score.percentage > 95
         puts("#{result.top_score.key} #{result.top_score.percentage}% - #{i.title}")
       end
     end
