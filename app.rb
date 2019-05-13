@@ -129,10 +129,11 @@ get %r{/popular/([0-9]{4}-[0-9]{2})} do
     return
   end
 
+  page = [params[:page].to_i, 1].max
   date_begin = Date.strptime(date, '%Y-%m')
   date_end = date_begin >> 1 # >> 1 goes one month in the future
 
-  butler.popular_between(date_begin, date_end)
+  butler.popular_between(date_begin, date_end, page)
 end
 
 get '/popular' do
