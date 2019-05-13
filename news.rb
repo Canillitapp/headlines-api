@@ -127,10 +127,11 @@ class News < ActiveRecord::Base
       .limit(NEWS_LIMIT)
 
     news = []
+    puts("#{news_from_categories.to_a.size} #{news_from_bayes.to_a.size}")
     news += news_from_categories.to_a
     news += news_from_bayes.to_a
-    news.uniq! { |i| i.news_id }
-    news.sort_by { |i| i.date }
+    news.uniq!(&:news_id)
+    news.sort_by { |i| i.news_id }
     news.map { |i| News.add_reactions_to_news(i) }
   end
 
