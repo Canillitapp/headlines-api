@@ -56,6 +56,17 @@ class Butler
     end
   end
 
+  def popular_between(date_begin, date_end)
+    redis_key = "popular_#{date_begin}_#{date_end}"
+
+    get(redis_key) do
+      News
+        .popular_news_between(date_begin, date_end)
+        .map { |i| News.add_reactions_to_news(i) }
+        .to_json
+    end
+  end
+
   def category(id, page)
     redis_key = "category_#{id}_#{page}"
 

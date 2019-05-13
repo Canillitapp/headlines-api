@@ -45,6 +45,16 @@ class News < ActiveRecord::Base
       .limit(NEWS_LIMIT)
   end
 
+  def self.popular_news_between(date_begin, date_end)
+    # NOTE: this query is not supported on SQLite
+    News
+      .select('news.*, (COALESCE(news.reactions_count, 0) + COALESCE(news.content_views_count, 0)) as interactions')
+      .where('date > ?', date_begin.to_time.to_i)
+      .where('date < ?', date_end.to_time.to_i)
+      .having('interactions != 0')
+      .order('interactions DESC')
+  end
+
   def self.from_date(date, page)
     date_begin = Date.strptime("#{date} -0300", '%Y-%m-%d %z')
     date_end = date_begin + 1
