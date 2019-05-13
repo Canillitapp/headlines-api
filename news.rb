@@ -113,12 +113,23 @@ class News < ActiveRecord::Base
 
     # see nested asociations on .joins
     # http://guides.rubyonrails.org/active_record_querying.html
-    news = News
+    news_from_categories = News
       .joins(source: :category)
-      .where('category_id = ? or bayes_category_id = ?', id, id)
+      .where(categories: { id: id })
       .offset(offset)
       .order('news_id DESC')
       .limit(NEWS_LIMIT)
+
+    news_from_bayes = News
+      .where(bayes_category_id: id)
+      .offset(offset)
+      .order('news_id DESC')
+      .limit(NEWS_LIMIT)
+
+    news = []
+    news += news_from_categories.to_a
+    news += news_from_bayes.to_a
+    news.uniq! { |i| i.news_id }
 
     news.map { |i| News.add_reactions_to_news(i) }
   end
