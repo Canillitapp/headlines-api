@@ -130,7 +130,7 @@ class News < ActiveRecord::Base
     news += news_from_categories.to_a
     news += news_from_bayes.to_a
     news.uniq!(&:news_id)
-    news.sort_by { |i| i.news_id }
+    news = news.sort_by { |i| i.news_id }
     news.map { |i| News.add_reactions_to_news(i) }
   end
 
