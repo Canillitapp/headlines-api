@@ -85,7 +85,7 @@ class NewsFetcher
           end
 
           bayes_category_id = nil
-          if !@bayes_trainer.nil? && source.category_id.nil?
+          if !@bayes_trainer.nil? && source['category_id'].nil?
             bayes_category_id = @bayes_trainer.classify_title(title)
           end
 
@@ -98,7 +98,7 @@ class NewsFetcher
               img_url: img_url,
               bayes_category_id: bayes_category_id
             )
-            @logger.debug("Saving #{link_url}. s:#{source['source_id']}, bc: #{bayes_category_id}")
+            @logger.debug("Saving #{link_url}. s:#{source['source_id']}, bc: #{bayes_category_id} c: #{source['category_id']}")
 
             text = Highscore::Content.new news.title, @blacklist
             text.configure do
