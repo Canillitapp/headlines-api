@@ -127,7 +127,6 @@ class News < ActiveRecord::Base
       .limit(NEWS_LIMIT)
 
     news = []
-    puts("#{news_from_categories.to_a.size} #{news_from_bayes.to_a.size}")
     news += news_from_categories.to_a
     news += news_from_bayes.to_a
     news.uniq!(&:news_id)

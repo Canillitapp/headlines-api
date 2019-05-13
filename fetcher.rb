@@ -18,7 +18,7 @@ class NewsFetcher
     @blacklist = Highscore::Blacklist.load_file 'blacklist.txt'
 
     redis_url = ENV['REDIS_URL_FULL']
-    @bayes_trainer = BayesTrainer.new(redis_url) unless redis_url.nil?
+    @bayes_trainer = BayesTrainer.new(redis_url)
   end
 
   def self.url_from_news(item, feed_uri)
