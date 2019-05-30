@@ -8,7 +8,7 @@ if settings.db_adapter == 'sqlite3'
   ActiveRecord::Base.establish_connection(
     adapter: settings.db_adapter,
     database: settings.db_database,
-    pool: 30
+    pool: 10
   )
 else
   ActiveRecord::Base.establish_connection(
@@ -17,7 +17,7 @@ else
     username: settings.db_username,
     password: settings.db_password,
     database: settings.db_database,
-    pool: 50
+    pool: 25
   )
 end
 
