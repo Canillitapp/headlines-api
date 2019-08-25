@@ -14,6 +14,7 @@ else
   ActiveRecord::Base.establish_connection(
     adapter: settings.db_adapter,
     host: settings.db_host,
+    port: settings.db_port,
     username: settings.db_username,
     password: settings.db_password,
     database: settings.db_database,

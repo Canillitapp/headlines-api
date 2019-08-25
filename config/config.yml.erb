@@ -1,17 +1,26 @@
 development:
-  db_adapter: 'sqlite3'
-  db_database: 'news.db'
+  db_adapter: 'mysql2'
+  db_host: <%= ENV["DB_HOST"] || 'localhost' %>
+  db_port: <%= ENV["DB_PORT"] || 3306 %>
+  db_username: <%= ENV["DB_USERNAME"] ||'root' %>
+  db_password: <%= ENV["DB_PASSWORD"] || '' %>
+  db_database: <%= ENV["DB_DATABASE"] || 'canillitapp' %>
   redis_url: <%= ENV["REDIS_URL_FULL"] %>
 
 production:
   db_adapter: 'mysql2'
   db_host: <%= ENV["DB_HOST"] || 'localhost' %>
+  db_port: <%= ENV["DB_PORT"] || 3306 %>
   db_username: <%= ENV["DB_USERNAME"] ||'root' %>
   db_password: <%= ENV["DB_PASSWORD"] || '' %>
   db_database: <%= ENV["DB_DATABASE"] || 'canillitapp' %>
   redis_url: <%= ENV["REDIS_URL_FULL"] %>
 
 test:
-  db_adapter: 'sqlite3'
-  db_database: 'test.db'
+  db_adapter: 'mysql2'
+  db_host: <%= ENV["DB_HOST_TEST"] || 'localhost' %>
+  db_port: <%= ENV["DB_PORT_TEST"] || 3306 %>
+  db_username: <%= ENV["DB_USERNAME_TEST"] ||'root' %>
+  db_password: <%= ENV["DB_PASSWORD_TEST"] || 'corsa0gris1' %>
+  db_database: <%= ENV["DB_DATABASE_TEST"] || 'canillitapp' %>
   redis_url: <%= ENV["REDIS_URL_FULL"] %>
