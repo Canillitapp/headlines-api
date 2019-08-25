@@ -96,19 +96,6 @@ get '/news/:id' do
   News.from_id(id).to_json
 end
 
-get '/news' do
-  # matches "GET /news?tags=sol,perez&relation=AND"
-  content_type :json
-
-  tags = params[:tags].split(',')
-
-  # default relation is OR
-  relation = params[:relation] || 'OR'
-
-  result = relation.downcase == 'and' ? News.from_tags_and(tags) : News.from_tags_or(tags)
-  result.to_json
-end
-
 get '/latest/:date' do
   content_type :json
 
