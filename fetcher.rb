@@ -7,6 +7,7 @@ require 'uri'
 require 'metainspector'
 require 'i18n'
 
+require './bayes_trainer'
 require './news'
 require './source'
 
@@ -15,6 +16,12 @@ class NewsFetcher
   def initialize
     @logger = Logger.new(STDOUT)
     @blacklist = Highscore::Blacklist.load_file 'blacklist.txt'
+
+    redis_url = ENV['REDIS_URL_FULL']
+
+    unless Sinatra::Application.environment == :test
+      @bayes_trainer = BayesTrainer.new(redis_url)
+    end
   end
 
   def self.url_from_news(item, feed_uri)
@@ -80,15 +87,21 @@ class NewsFetcher
             next
           end
 
+          bayes_category_id = nil
+          if !@bayes_trainer.nil? && source['category_id'].nil?
+            bayes_category_id = @bayes_trainer.classify_title(title)
+          end
+
           ActiveRecord::Base.connection_pool.with_connection do
             news = News.create(
               url: link_url,
               title: title,
               date: date,
               source_id: source['source_id'],
-              img_url: img_url
+              img_url: img_url,
+              bayes_category_id: bayes_category_id
             )
-            @logger.debug("Saving #{link_url[0...40]}. s:#{source['source_id']}")
+            @logger.debug("Saving #{link_url}. s:#{source['source_id']}, bc: #{bayes_category_id} c: #{source['category_id']}")
 
             text = Highscore::Content.new news.title, @blacklist
             text.configure do
