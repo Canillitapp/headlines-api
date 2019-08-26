@@ -8,19 +8,20 @@ require File.expand_path(File.dirname(__FILE__) + '/../reaction.rb')
 require File.expand_path(File.dirname(__FILE__) + '/../app.rb')
 
 # AppTest
+
 class AppTest < Test::Unit::TestCase
   include Rack::Test::Methods
   self.test_order = :defined
 
   def self.startup
-    News.destroy_all
-    Reaction.destroy_all
+    @@user_id = rand(256)
 
     news = NewsFetcher.new
     news.fetch
   end
 
   def self.shutdown
+    Reaction.where(user_id: @@user_id).destroy_all
   end
 
   def app
@@ -77,7 +78,7 @@ class AppTest < Test::Unit::TestCase
 
     # no source -> 400
     params = {
-      user_id: 1,
+      user_id: @@user_id,
       reaction: '🍆'
     }
 
@@ -86,7 +87,7 @@ class AppTest < Test::Unit::TestCase
 
     # no reaction -> 400
     params = {
-      user_id: 1,
+      user_id: @@user_id,
       source: 'test'
     }
 
@@ -100,7 +101,7 @@ class AppTest < Test::Unit::TestCase
 
   def test_post_reaction
     params = {
-      user_id: 1,
+      user_id: @@user_id,
       source: 'test',
       reaction: '🍆'
     }
@@ -108,7 +109,7 @@ class AppTest < Test::Unit::TestCase
     post "reactions/#{News.first.news_id}", params
     assert last_response.ok?
 
-    assert_equal(1, Reaction.where(news_id: News.first.news_id).count)
+    assert(Reaction.where(news_id: News.first.news_id).count >= 1)
 
     r = Reaction.where(news_id: News.first.news_id).first
     assert_equal(':eggplant:', r.reaction)
@@ -116,7 +117,7 @@ class AppTest < Test::Unit::TestCase
 
   def test_post_unreaction
     params = {
-      user_id: 1,
+      user_id: @@user_id,
       source: 'test',
       reaction: '😂'
     }
@@ -141,7 +142,7 @@ class AppTest < Test::Unit::TestCase
   end
 
   def test_get_reactions
-    get 'reactions/1/test'
+    get "reactions/#{@@user_id}/test"
     assert last_response.ok?
 
     parsed_body = JSON.parse(last_response.body)
