@@ -25,6 +25,13 @@ class News < ActiveRecord::Base
     tmp
   end
 
+  def self.patch_wrong_img_url(n)
+    if n['img_url'].nil? && n['img_url'].match(%r{/https?:\/\/[\S]+/})
+      n['img_url'] = nil
+    end
+    n
+  end
+
   def self.search_news_by_title(search, page)
     offset = (page - 1) * NEWS_LIMIT
 

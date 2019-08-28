@@ -91,6 +91,7 @@ class Butler
       News
         .search_news_by_title(keywords, page)
         .map { |i| News.add_reactions_to_news(i) }
+        .map { |i| News.patch_wrong_img_url(i) }
         .to_json(methods: :source_name)
     end
   end
