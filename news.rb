@@ -31,7 +31,7 @@ class News < ActiveRecord::Base
     # if the search is surrounded by quotes and it's more than
     # one word (like "Sol Perez"), the app will use a different
     # search query. https://rubular.com/r/RW8sEE9eApr9UP
-    news = if search.split(' ').length > 1 && search.match(%r{/^\".+\"$/})
+    news = if search.split(' ').length > 1 && !search.match(%r{/^\".+\"$/})
              News.where('MATCH (title) AGAINST (? IN BOOLEAN MODE)', search)
            else
              News.where('title LIKE ?', "%#{search}%")
