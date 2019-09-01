@@ -34,11 +34,12 @@ class News < ActiveRecord::Base
     news = if search.split(' ').length > 1 && !search.match(%r{/^\".+\"$/})
              News.where('MATCH (title) AGAINST (? IN BOOLEAN MODE)', search)
            else
-             News.where('title LIKE ?', "%#{search}%")
+             News
+               .where('title LIKE ?', "%#{search}%")
+               .order('news_id DESC')
            end
 
     news
-      .order('news_id DESC')
       .offset(offset)
       .limit(NEWS_LIMIT)
   end
