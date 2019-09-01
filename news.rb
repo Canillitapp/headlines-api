@@ -30,8 +30,8 @@ class News < ActiveRecord::Base
 
     # if the search is surrounded by quotes and it's more than
     # one word (like "Sol Perez"), the app will use a different
-    # search query. https://rubular.com/r/db9gSIxQ0gVrJ2
-    news = if search.split(' ').length > 1 && !search.match?(/^[\"|“].+[\"|“]$/)
+    # search query. https://rubular.com/r/JOrjfCmvN97uw6
+    news = if search.split(' ').length > 1 && !search.match?(/^[\"|“|”].+[\"|“|”]$/)
              News.where('MATCH (title) AGAINST (? IN BOOLEAN MODE)', search)
            else
              News
