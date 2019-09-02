@@ -34,21 +34,12 @@ class News < ActiveRecord::Base
 
   def self.search_news_by_title(search, page)
     offset = (page - 1) * NEWS_LIMIT
-    escaped_search = search.gsub(/[\"|“|”]/, '')
-    # if the search is surrounded by quotes and it's more than
-    # one word (like "Sol Perez"), the app will use a different
-    # search query. https://rubular.com/r/JOrjfCmvN97uw6
-    news = if search.split(' ').length > 1 && !search.match?(/^[\"|“|”].+[\"|“|”]$/)
-             News.where('MATCH (title) AGAINST (? IN BOOLEAN MODE)', escaped_search)
-           else
-             News
-               .where('title LIKE ?', "%#{escaped_search}%")
-               .order('news_id DESC')
-           end
 
-    news
-      .offset(offset)
-      .limit(NEWS_LIMIT)
+    News
+     .where('title LIKE ?', "%#{search}%")
+     .order('news_id DESC')
+     .offset(offset)
+     .limit(NEWS_LIMIT)
   end
 
   def self.popular_news(page)
