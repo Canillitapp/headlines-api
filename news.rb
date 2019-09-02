@@ -26,7 +26,7 @@ class News < ActiveRecord::Base
   end
 
   def self.patch_wrong_img_url(n)
-    if n['img_url'].nil? && n['img_url'].match(%r{/https?:\/\/[\S]+/})
+    if !n['img_url'].nil? && !n['img_url'].match?(/https?:\/\/[\S]+/)
       n['img_url'] = nil
     end
     n
