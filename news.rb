@@ -40,17 +40,11 @@ class News < ActiveRecord::Base
                   .map { |i| "+#{i}" }
                   .join(' ')
 
-    puts News
+    News
      .where('MATCH (title) AGAINST (? IN BOOLEAN MODE)', search_term)
      .order('news_id DESC')
      .offset(offset)
-     .limit(NEWS_LIMIT).to_sql
-
-     News
-      .where('MATCH (title) AGAINST (? IN BOOLEAN MODE)', search_term)
-      .order('news_id DESC')
-      .offset(offset)
-      .limit(NEWS_LIMIT)
+     .limit(NEWS_LIMIT)
   end
 
   def self.popular_news(page)
