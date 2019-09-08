@@ -9,7 +9,7 @@ require './source.rb'
 
 CACHED_BAYES_REDIS_KEY = 'categories_bayes'
 TRAIN_NEWS_LIMIT = 3000
-CLASSIFY_THRESHOLD = 90
+CLASSIFY_THRESHOLD = 80
 
 class BayesTrainer
 
