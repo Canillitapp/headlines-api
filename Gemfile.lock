@@ -91,7 +91,7 @@ GEM
       rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
-    rake (12.3.2)
+    rake (12.3.3)
     redis (4.1.0)
     rufus-scheduler (3.5.2)
       fugit (~> 1.1, >= 1.1.5)
