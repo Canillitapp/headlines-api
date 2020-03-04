@@ -81,4 +81,21 @@ class FetcherTest < Test::Unit::TestCase
     date = NewsFetcher.date_from_news('stuff')
     assert_nil(date)
   end
+
+  def test_good_infobae_spam_dolar
+    title = 'Dólar hoy en Nicaragua: cotización del córdoba nicaragüense'\
+            'oficial al dólar estadounidense del 4 de marzo (USD/NIO)'
+    assert(NewsFetcher.matches_infobae_spam_dolar(title))
+  end
+
+  def test_not_infobae_spam_dolar
+    title = 'Dólar hoy en Argentina: cotización del dólar oficial al dólar'\
+            'estadounidense del 4 de marzo (USD/ARS)'
+    assert(!NewsFetcher.matches_infobae_spam_dolar(title))
+  end
+
+  def test_good_infobae_spam_from_other_newspapers
+    title = 'Tapa de Clarín, 9 de Septiembre de 1985'
+    assert(NewsFetcher.matches_infobae_spam_from_other_newspapers(title))
+  end
 end
