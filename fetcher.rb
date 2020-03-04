@@ -79,10 +79,12 @@ class NewsFetcher
           date = NewsFetcher.date_from_news(item)
           date = DateTime.now.strftime('%s') if date.nil?
 
-          # this matches every title with "xx de <month> de <year>" commonly
-          # used for quoting news from other newspapers on Infobae
-          news_from_other_papers_regex = /.+[0-9]+\sde\s(Enero|Febrero|Marzo|Abril|Mayo|Junio|Julio|Agosto|Septiembre|Octubre|Noviembre|Diciembre)\sde\s[0-9]+/i
-          if title.match(news_from_other_papers_regex) && source['name'] == 'Infobae'
+          if NewsFetcher.matches_infobae_spam_from_other_newspapers(title) && source['name'] == 'Infobae'
+            @logger.debug("Skipping #{title}")
+            next
+          end
+
+          if NewsFetcher.matches_infobae_spam_dolar(title) && source['name'] == 'Infobae'
             @logger.debug("Skipping #{title}")
             next
           end
@@ -127,6 +129,21 @@ class NewsFetcher
     end
   rescue => e
     @logger.warn("Exception: #{e.message} at #{feed_uri}")
+  end
+
+  def self.matches_infobae_spam_dolar(title)
+    # this matches every title with "Dólar hoy en <country>" (except Argentina)
+    # commonly used on Infobae
+    # https://rubular.com/r/RlNWQjoviBtLCP
+    regex = /^Dólar hoy en (?!Argentina)/
+    title.match(regex)
+  end
+
+  def self.matches_infobae_spam_from_other_newspapers(title)
+    # this matches every title with "<something> xx de <month> de <year>" commonly
+    # used for quoting news from other newspapers on Infobae
+    regex = /.+[0-9]+\sde\s(Enero|Febrero|Marzo|Abril|Mayo|Junio|Julio|Agosto|Septiembre|Octubre|Noviembre|Diciembre)\sde\s[0-9]+/i
+    title.match(regex)
   end
 
   def fetch_sources(sources)
