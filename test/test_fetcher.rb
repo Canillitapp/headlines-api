@@ -72,11 +72,6 @@ class FetcherTest < Test::Unit::TestCase
     assert_not_nil(NewsFetcher.news_image_url(test_url))
   end
 
-  def test_bad_image_url
-    test_url = 'http://442.perfil.com/2017-05-04-528775-por-que-se-enojo-buffon-con-los-hinchas-de-la-juventus/'
-    assert_nil(NewsFetcher.news_image_url(test_url))
-  end
-
   def test_good_date
     date = NewsFetcher.date_from_news(@rss.items.first)
     assert_equal('495138600', date)
