@@ -85,13 +85,19 @@ class FetcherTest < Test::Unit::TestCase
   def test_good_infobae_spam_dolar
     title = 'Dólar hoy en Nicaragua: cotización del córdoba nicaragüense'\
             'oficial al dólar estadounidense del 4 de marzo (USD/NIO)'
-    assert(NewsFetcher.matches_infobae_spam_dolar(title))
+    assert(NewsFetcher.matches_infobae_spam_currency(title))
   end
 
   def test_not_infobae_spam_dolar
     title = 'Dólar hoy en Argentina: cotización del dólar oficial al dólar'\
             'estadounidense del 4 de marzo (USD/ARS)'
-    assert(!NewsFetcher.matches_infobae_spam_dolar(title))
+    assert(!NewsFetcher.matches_infobae_spam_currency(title))
+  end
+
+  def test_good_infobae_spam_euro
+    title = 'Euro hoy en Perú: cotización del nuevo sol al euro del 5 de marzo'\
+            '(EUR/PEN)'
+    assert(NewsFetcher.matches_infobae_spam_currency(title))
   end
 
   def test_good_infobae_spam_from_other_newspapers
