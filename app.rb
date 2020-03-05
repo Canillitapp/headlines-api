@@ -37,7 +37,7 @@ end
 get '/' do
   content_type :json
   {
-    version: '1.2.1',
+    version: '1.2.2',
     author: '@betzerra'
   }.to_json
 end

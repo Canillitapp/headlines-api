@@ -84,7 +84,7 @@ class NewsFetcher
             next
           end
 
-          if NewsFetcher.matches_infobae_spam_dolar(title) && source['name'] == 'Infobae'
+          if NewsFetcher.matches_infobae_spam_currency(title) && source['name'] == 'Infobae'
             @logger.debug("Skipping #{title}")
             next
           end
@@ -131,11 +131,12 @@ class NewsFetcher
     @logger.warn("Exception: #{e.message} at #{feed_uri}")
   end
 
-  def self.matches_infobae_spam_dolar(title)
-    # this matches every title with "Dólar hoy en <country>" (except Argentina)
+  def self.matches_infobae_spam_currency(title)
+    # this matches every title with "Dólar hoy en <country>" or
+    # "Euro hoy en <country>" (except Argentina)
     # commonly used on Infobae
     # https://rubular.com/r/RlNWQjoviBtLCP
-    regex = /^Dólar hoy en (?!Argentina)/
+    regex = /^(Dólar|Euro) hoy en (?!Argentina)/
     title.match(regex)
   end
 
