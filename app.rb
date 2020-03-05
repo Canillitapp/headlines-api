@@ -37,7 +37,7 @@ end
 get '/' do
   content_type :json
   {
-    version: '1.2.0',
+    version: '1.2.1',
     author: '@betzerra'
   }.to_json
 end
@@ -192,6 +192,7 @@ get '/search/trending/' do
 
   Search
     .select('criteria, count(criteria) as quantity')
+    .where('date >= DATE_SUB(SYSDATE(), INTERVAL 60 DAY)')
     .group(:criteria)
     .order('quantity DESC')
     .limit(10)
