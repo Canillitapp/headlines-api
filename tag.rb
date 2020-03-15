@@ -8,6 +8,10 @@ class Tag < ActiveRecord::Base
     date_begin = Date.strptime("#{date} -0300", '%Y-%m-%d %z')
     date_end = date_begin + 1
 
+    Tag.keywords_between(date_begin, date_end, quantity)
+  end
+
+  def self.keywords_between(date_begin, date_end, quantity)
     Tag
       .select('news_tags.tag_id, count(news_tags.tag_id) as q, tags.name as name')
       .joins(:news)
