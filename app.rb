@@ -48,6 +48,12 @@ get '/trending/:date' do
   redirect to("/trending/#{params[:date]}/3")
 end
 
+get '/week' do
+  content_type :json
+
+  News.trending_this_week.to_json
+end
+
 get '/trending/:date/:count' do
   content_type :json
 

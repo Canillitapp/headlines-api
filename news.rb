@@ -127,6 +127,14 @@ class News < ActiveRecord::Base
     news.map { |i| News.add_reactions_to_news(i) }
   end
 
+  # actually it's not THIS week but "last 7 days"
+  def self.trending_this_week
+    tomorrow = Date.today + 1
+    last_week = Date.today - 7
+
+    Tag.keywords_between(last_week, tomorrow, 6)
+  end
+
   def self.trending(date, count)
     keywords = Tag.keywords_from_date(date, count * 3)
 
