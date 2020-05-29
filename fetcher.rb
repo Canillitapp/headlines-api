@@ -48,7 +48,12 @@ class NewsFetcher
 
   def self.news_image_url(url)
     page = MetaInspector.new(url)
-    page.images.best
+    image = page.images.best
+    if image == 'https://www.infobae.com/pb/resources/assets/img/fallback-promo-image.png'
+      nil
+    else
+      image
+    end
   rescue
     nil
   end
@@ -93,6 +98,8 @@ class NewsFetcher
           if !@bayes_trainer.nil? && source['category_id'].nil?
             bayes_category_id = @bayes_trainer.classify_title(title)
           end
+
+
 
           ActiveRecord::Base.connection_pool.with_connection do
             news = News.create(
