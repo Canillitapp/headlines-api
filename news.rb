@@ -132,7 +132,7 @@ class News < ActiveRecord::Base
     tomorrow = Date.today + 1
     last_week = Date.today - 7
 
-    Tag.keywords_between(last_week, tomorrow, 6)
+    Tag.keywords_between(last_week, tomorrow, 12)
   end
 
   def self.trending(date, count)

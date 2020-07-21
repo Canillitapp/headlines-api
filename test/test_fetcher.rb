@@ -104,4 +104,15 @@ class FetcherTest < Test::Unit::TestCase
     title = 'Tapa de Clarín, 9 de Septiembre de 1985'
     assert(NewsFetcher.matches_infobae_spam_from_other_newspapers(title))
   end
+
+  def test_infobae_fallback_image
+    fallback_image_1 = 'https://www.infobae.com/pb/resources/assets/img/fallback-promo-image.png'
+    assert(NewsFetcher.matches_infobae_fallback_image(fallback_image_1))
+
+    fallback_image_2 = 'https://www.infobae.com/pf/resources/images/fallback-promo-image.png?d=352'
+    assert(NewsFetcher.matches_infobae_fallback_image(fallback_image_2))
+
+    regular_image = 'https://www.infobae.com/new-resizer/kJvf-3WK1qZXTVuiqVrJmQrrZYA=/992x774/filters:format(jpg):quality(100)//cloudfront-us-east-1.images.arcpublishing.com/infobae/CEL7JU6GJ5ACDAHBE5JNIO7B6Q.jpg'
+    assert(!NewsFetcher.matches_infobae_fallback_image(regular_image))
+  end
 end

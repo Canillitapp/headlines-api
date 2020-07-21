@@ -48,7 +48,13 @@ class NewsFetcher
 
   def self.news_image_url(url)
     page = MetaInspector.new(url)
-    page.images.best
+
+    image = page.images.best
+    if NewsFetcher.matches_infobae_fallback_image(image)
+      nil
+    else
+      image
+    end
   rescue
     nil
   end
@@ -145,6 +151,11 @@ class NewsFetcher
     # used for quoting news from other newspapers on Infobae
     regex = /.+[0-9]+\sde\s(Enero|Febrero|Marzo|Abril|Mayo|Junio|Julio|Agosto|Septiembre|Octubre|Noviembre|Diciembre)\sde\s[0-9]+/i
     title.match(regex)
+  end
+
+  def self.matches_infobae_fallback_image(url)
+    regex = /.*infobae.*fallback-promo.*/
+    url.match(regex)
   end
 
   def fetch_sources(sources)
