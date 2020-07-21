@@ -48,8 +48,9 @@ class NewsFetcher
 
   def self.news_image_url(url)
     page = MetaInspector.new(url)
+
     image = page.images.best
-    if image == 'https://www.infobae.com/pb/resources/assets/img/fallback-promo-image.png'
+    if NewsFetcher.matches_infobae_fallback_image(image)
       nil
     else
       image
@@ -98,8 +99,6 @@ class NewsFetcher
           if !@bayes_trainer.nil? && source['category_id'].nil?
             bayes_category_id = @bayes_trainer.classify_title(title)
           end
-
-
 
           ActiveRecord::Base.connection_pool.with_connection do
             news = News.create(
@@ -152,6 +151,11 @@ class NewsFetcher
     # used for quoting news from other newspapers on Infobae
     regex = /.+[0-9]+\sde\s(Enero|Febrero|Marzo|Abril|Mayo|Junio|Julio|Agosto|Septiembre|Octubre|Noviembre|Diciembre)\sde\s[0-9]+/i
     title.match(regex)
+  end
+
+  def self.matches_infobae_fallback_image(url)
+    regex = /.*infobae.*fallback-promo.*/
+    url.match(regex)
   end
 
   def fetch_sources(sources)
