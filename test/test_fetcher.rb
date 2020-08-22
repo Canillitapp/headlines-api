@@ -105,6 +105,16 @@ class FetcherTest < Test::Unit::TestCase
     assert(NewsFetcher.matches_infobae_spam_from_other_newspapers(title))
   end
 
+  def test_infobae_spam_coronavirus
+    # should match
+    title = 'Coahuila reporta 25 muertes por COVID-19 y la cifra asciende a 1.212'
+    assert(NewsFetcher.matches_infobae_spam_coronavirus(title))
+
+    # should NOT match
+    title = 'Coronavirus en Argentina: informan 65 nuevas muertes y el total llega a 6.795'
+    assert(!NewsFetcher.matches_infobae_spam_coronavirus(title))
+  end
+
   def test_infobae_fallback_image
     fallback_image_1 = 'https://www.infobae.com/pb/resources/assets/img/fallback-promo-image.png'
     assert(NewsFetcher.matches_infobae_fallback_image(fallback_image_1))
