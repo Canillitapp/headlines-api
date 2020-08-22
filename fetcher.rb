@@ -95,6 +95,11 @@ class NewsFetcher
             next
           end
 
+          if NewsFetcher.matches_infobae_spam_coronavirus(title) && source['name'] == 'Infobae'
+            @logger.debug("Skipping #{title}")
+            next
+          end
+
           bayes_category_id = nil
           if !@bayes_trainer.nil? && source['category_id'].nil?
             bayes_category_id = @bayes_trainer.classify_title(title)
@@ -156,6 +161,14 @@ class NewsFetcher
   def self.matches_infobae_fallback_image(url)
     regex = /.*infobae.*fallback-promo.*/
     url.match(regex)
+  end
+
+  def self.matches_infobae_spam_coronavirus(title)
+    # this matches every title with 
+    # "<something> muertes por COVID-19 y la cifra asciende a <number>"
+    # https://rubular.com/r/p57NxBYEj5vEBt
+    regex = /^.*\smuertes por COVID-19 y la cifra asciende a \d*.\d*/i
+    title.match(regex)
   end
 
   def fetch_sources(sources)
