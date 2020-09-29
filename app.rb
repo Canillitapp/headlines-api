@@ -231,7 +231,7 @@ get '/categories/' do
 
   categories = Category.all.map do |c|
     category = c.as_json
-    news_source = c.sources.joins(:news).first
+    news_source = c.sources.joins(:news).where(fetch_enabled: 1).first
     unless news_source.nil?
       category['img_url'] = news_source.news.last.img_url
     end
