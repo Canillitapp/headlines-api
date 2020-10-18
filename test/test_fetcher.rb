@@ -105,6 +105,16 @@ class FetcherTest < Test::Unit::TestCase
     assert(NewsFetcher.matches_infobae_spam_from_other_newspapers(title))
   end
 
+  def test_good_infobae_from_agencias
+    url = 'https://www.infobae.com/america/agencias/2020/04/17/sam-heughan-de-outlander-habla-contra-el-abuso-en-internet/'
+    assert(NewsFetcher .matches_infobae_posts_from_agencias(url))
+  end
+
+  def test_bad_infobae_from_agencias
+    url = 'https://www.infobae.com/cultura/2020/04/17/viernes-17-de-abril-5-actividades-online-para-disfrutar-en-casa/'
+    assert(!NewsFetcher .matches_infobae_posts_from_agencias(url))
+  end
+
   def test_infobae_spam_coronavirus
     # should match
     title = 'Coahuila reporta 25 muertes por COVID-19 y la cifra asciende a 1.212'
