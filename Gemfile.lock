@@ -7,24 +7,24 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (6.0.2.1)
-      activesupport (= 6.0.2.1)
-    activerecord (6.0.2.1)
-      activemodel (= 6.0.2.1)
-      activesupport (= 6.0.2.1)
-    activesupport (6.0.2.1)
+    activemodel (6.0.3.5)
+      activesupport (= 6.0.3.5)
+    activerecord (6.0.3.5)
+      activemodel (= 6.0.3.5)
+      activesupport (= 6.0.3.5)
+    activesupport (6.0.3.5)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 0.7, < 2)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
-      zeitwerk (~> 2.2)
+      zeitwerk (~> 2.2, >= 2.2.2)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
     apnotic (1.6.0)
       connection_pool (~> 2)
       net-http2 (>= 0.18, < 2)
     backports (3.16.1)
-    concurrent-ruby (1.1.6)
+    concurrent-ruby (1.1.8)
     connection_pool (2.2.2)
     crass (1.0.6)
     domain_name (0.5.20190701)
@@ -65,7 +65,7 @@ GEM
       nesty (~> 1.0.2)
       nokogiri (~> 1.10.7)
     mini_portile2 (2.4.0)
-    minitest (5.14.0)
+    minitest (5.14.4)
     multi_json (1.14.1)
     multipart-post (2.1.1)
     mustermann (1.1.1)
@@ -119,13 +119,13 @@ GEM
       power_assert
     thread_safe (0.3.6)
     tilt (2.0.10)
-    tzinfo (1.2.6)
+    tzinfo (1.2.9)
       thread_safe (~> 0.1)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.6)
     whatlanguage (1.0.6)
-    zeitwerk (2.3.0)
+    zeitwerk (2.4.2)
 
 PLATFORMS
   ruby
