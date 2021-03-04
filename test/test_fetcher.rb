@@ -125,6 +125,12 @@ class FetcherTest < Test::Unit::TestCase
     assert(!NewsFetcher.matches_infobae_spam_coronavirus(title))
   end
 
+  def test_lanacion_spam_coronavirus
+    # should match
+    title = 'Coronavirus en Argentina: casos en Bragado, Buenos Aires al 3 de Marzo'
+    assert(NewsFetcher.matches_lanacion_spam_coronavirus(title))
+  end
+
   def test_infobae_fallback_image
     fallback_image_1 = 'https://www.infobae.com/pb/resources/assets/img/fallback-promo-image.png'
     assert(NewsFetcher.matches_infobae_fallback_image(fallback_image_1))
