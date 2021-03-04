@@ -165,7 +165,7 @@ class NewsFetcher
     # this matches every title with
     # "Coronavirus en Argentina: casos en <something> al <number> de <month>"
     # https://rubular.com/r/KLEjLguqr8oNJ2
-    regex = /^Coronavirus en Argentina: casos en .* al \d de .* /i
+    regex = /^Coronavirus en Argentina: casos en .* al \d de .*/i
     title.match(regex)
   end
 
