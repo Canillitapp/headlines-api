@@ -164,8 +164,8 @@ class NewsFetcher
   def self.matches_lanacion_spam_coronavirus(title)
     # this matches every title with
     # "Coronavirus en Argentina: casos en <something> al <number> de <month>"
-    # https://rubular.com/r/KLEjLguqr8oNJ2
-    regex = /^Coronavirus en Argentina: casos en .* al \d de .*/i
+    # https://rubular.com/r/qqRTvv8gyIG7q2
+    regex = /^Coronavirus en Argentina: casos en .* al \d+ .*/i
     title.match(regex)
   end
 
